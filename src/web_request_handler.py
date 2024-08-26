@@ -1,3 +1,4 @@
+import json
 from http.server import BaseHTTPRequestHandler
 
 
@@ -11,11 +12,12 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
             self._send_response(200, 'text/html', '<h1>Hello, GET!</h1>')
+        elif self.path.startswith('/currencies'):
+            self._send_response(200, 'text/html', '<h1>currencies</h1>')
+        else:
+            self._send_response(404, 'text/html', '<h1>404 Not Found</h1>')
 
     def do_POST(self):
-        length = int(self.headers['Content-Length'])
-        data = self.rfile.read(length)
-
-        self._send_response(200)
-        response = f"Received POST data: {data.decode('utf-8')}"
-        self.wfile.write(response.encode('utf-8'))
+        content_length = int(self.headers['Content-Length'])
+        post_data = self.rfile.read(content_length)
+        self._send_response(200, 'application/json', post_data)
