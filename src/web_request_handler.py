@@ -1,5 +1,5 @@
-import json
 from http.server import BaseHTTPRequestHandler
+import urllib.parse
 
 
 class WebRequestHandler(BaseHTTPRequestHandler):
@@ -13,6 +13,8 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         if self.path == '/':
             self._send_response(200, 'text/html', '<h1>Hello, GET!</h1>')
         elif self.path.startswith('/currencies'):
+            o = urllib.parse.urlparse(self.path).query
+            print(urllib.parse.parse_qs(o))
             self._send_response(200, 'text/html', '<h1>currencies</h1>')
         else:
             self._send_response(404, 'text/html', '<h1>404 Not Found</h1>')

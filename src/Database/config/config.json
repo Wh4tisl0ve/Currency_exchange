@@ -1,0 +1,13 @@
+{
+  "sqlite": {
+    "database_path": "src/data/currency_exchange.db"
+  },
+  "postgres": {
+    "hostname": "127.0.0.1",
+    "port": 5432,
+    "username": "postgres",
+    "password": "dbconn",
+    "name_db": "currency_exchange"
+  }
+}
+
