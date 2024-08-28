@@ -1,28 +1,32 @@
+from src.DAO.base_dao import BaseDAO
 from src.DTO.currency_dto import CurrencyDTO
 from src.Database.db_client import DBClient
 
 
-class CurrenciesDAO:
+class CurrenciesDAO(BaseDAO):
     def __init__(self, db_client: DBClient):
-        self.__client_db = db_client
+        super().__init__(db_client, 'Currencies')
 
     def get_all_currencies(self) -> list[CurrencyDTO]:
-        query = 'SELECT * FROM Currencies'
-        self.__client_db.open_connection()
-        list_query_result = self.__client_db.execute_dml(query)
-        self.__client_db.close_connection()
-        list_all_currencies = []
+        list_all_currencies = self._get_all_entities()
+        all_currencies = [CurrencyDTO(id=cur[0],
+                                      name=cur[1],
+                                      code=cur[2],
+                                      sign=cur[3]) for cur in list_all_currencies]
 
-        return list_all_currencies
+        return all_currencies
 
     def get_concrete_currency(self, currency_code: str) -> CurrencyDTO:
-        query = f"SELECT * FROM Currencies WHERE Code = '{currency_code}'"
+        concrete_currency = self._get_concrete_entity(currency_code, 'Code')
 
+        return CurrencyDTO(id=concrete_currency[0],
+                           name=concrete_currency[1],
+                           code=concrete_currency[2],
+                           sign=concrete_currency[3])
+
+    def add(self, code: str = '', name: str = '', sign: str = '') -> None:
+        query = f"INSERT INTO Currencies (Code, FullName, Sign) VALUES ('{code}','{name}','{sign}')"
         self.__client_db.open_connection()
-        currency = self.__client_db.execute_dml(query)[0]
+        self.__client_db.execute_ddl(query)
         self.__client_db.close_connection()
-
-        return CurrencyDTO(id=currency[0],name=currency[1],code=currency[2], sign=currency[3])
-
-    def add(self, name: str, code: str, sign: str):
-        pass
+        print(f"{code},{name},{sign}")
