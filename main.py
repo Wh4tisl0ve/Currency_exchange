@@ -1,9 +1,9 @@
 import json
 
-from src.DAO.currencies_dao import CurrenciesDAO
-from src.DAO.exchange_rates_dao import ExchangeRatesDAO
-from src.Database.sqlite_client import SQLiteClient
-from src.Services.sevice import Service
+from src.dao.currencies_dao import CurrenciesDAO
+from src.dao.exchange_rates_dao import ExchangeRatesDAO
+from src.database.sqlite_client import SQLiteClient
+from src.services.service import Service
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
     exchange_rate_dao = ExchangeRatesDAO(db)
     currencies_dao = CurrenciesDAO(db)
     service = Service(currencies_dao, exchange_rate_dao)
-    service.get_concrete_exchange_rate('AUDRUB')
+    print(service.get_concrete_exchange_rate('RUBUSD'))
 
 
 if __name__ == '__main__':

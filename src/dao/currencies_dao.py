@@ -1,6 +1,6 @@
-from src.DAO.base_dao import BaseDAO
-from src.DTO.currency_dto import CurrencyDTO
-from src.Database.db_client import DBClient
+from src.dao.base_dao import BaseDAO
+from src.dto.currency_dto import CurrencyDTO
+from src.database.db_client import DBClient
 
 
 class CurrenciesDAO(BaseDAO):
@@ -16,7 +16,7 @@ class CurrenciesDAO(BaseDAO):
 
         return all_currencies
 
-    def get_concrete_currency(self, currency_code: str) -> CurrencyDTO:
+    def get_concrete_currency(self, currency_code: str = '') -> CurrencyDTO:
         concrete_currency = self._get_concrete_entity(currency_code, 'Code')
 
         return CurrencyDTO(id=concrete_currency[0],
@@ -26,7 +26,9 @@ class CurrenciesDAO(BaseDAO):
 
     def add(self, code: str = '', name: str = '', sign: str = '') -> None:
         query = f"INSERT INTO Currencies (Code, FullName, Sign) VALUES ('{code}','{name}','{sign}')"
-        self.__client_db.open_connection()
-        self.__client_db.execute_ddl(query)
-        self.__client_db.close_connection()
-        print(f"{code},{name},{sign}")
+        self._client_db.open_connection()
+        self._client_db.execute_ddl(query)
+        self._client_db.close_connection()
+
+    def update(self):
+        pass

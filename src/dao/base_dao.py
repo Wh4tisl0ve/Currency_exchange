@@ -1,7 +1,9 @@
-from src.Database.db_client import DBClient
+from abc import abstractmethod, ABC
+
+from src.database.db_client import DBClient
 
 
-class BaseDAO:
+class BaseDAO(ABC):
     def __init__(self, db_client: DBClient, name_entity: str):
         self._client_db = db_client
         self._name_entity = name_entity
@@ -23,11 +25,10 @@ class BaseDAO:
 
         return query_result
 
-    def add(self, **kwargs):
+    @abstractmethod
+    def add(self, *args):
         pass
 
-    def update(self, **kwargs):
-        pass
-
-    def delete(self, **kwargs):
+    @abstractmethod
+    def update(self, *args):
         pass
