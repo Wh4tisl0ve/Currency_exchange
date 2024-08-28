@@ -1,6 +1,6 @@
 {
   "sqlite": {
-    "database_path": "src/data/currency_exchange.db"
+    "database_path": "app/data/currency_exchange.db"
   },
   "postgres": {
     "hostname": "127.0.0.1",
