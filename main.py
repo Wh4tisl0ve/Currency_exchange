@@ -16,7 +16,7 @@ def main():
     currencies_dao = CurrenciesDAO(db)
     currency_service = CurrencyService(currencies_dao)
     exchange_rate_service = ExchangeRatesService(exchange_rate_dao, currencies_dao)
-    print(exchange_rate_service.perform_currency_exchange('CNY','AUD', 1))
+    print(exchange_rate_service.perform_currency_exchange('CNY', 'AUD', 1))
 
 
 if __name__ == '__main__':

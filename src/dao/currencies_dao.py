@@ -16,7 +16,7 @@ class CurrenciesDAO(BaseDAO):
 
         return all_currencies
 
-    def get_concrete_currency(self, currency_code: str = '') -> CurrencyDTO:
+    def get_currency(self, currency_code: str = '') -> CurrencyDTO:
         concrete_currency = self._get_concrete_entity(currency_code, 'Code')
 
         return CurrencyDTO(id=concrete_currency[0],

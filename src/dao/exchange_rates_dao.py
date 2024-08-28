@@ -18,7 +18,7 @@ class ExchangeRatesDAO(BaseDAO):
 
         return all_exchange_rates
 
-    def get_concrete_exchange_rate(self, base_currency_id: int = 0, target_currency_id: int = 0) -> ExchangeRatesDTO:
+    def get_exchange_rate(self, base_currency_id: int = 0, target_currency_id: int = 0) -> ExchangeRatesDTO:
         query = f'SELECT * FROM {self._name_entity} WHERE BaseCurrencyID = {base_currency_id} AND TargetCurrencyID = {target_currency_id}'
         self._client_db.open_connection()
         concrete_exchange_rate_fields = self._client_db.execute_dml(query)[0]

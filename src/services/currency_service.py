@@ -10,7 +10,7 @@ class CurrencyService:
         return self.__currencies_dao.get_all_currencies()
 
     def get_concrete_currency(self, currency_code: str) -> CurrencyDTO:
-        return self.__currencies_dao.get_concrete_currency(currency_code)
+        return self.__currencies_dao.get_currency(currency_code)
 
     def add_currency(self, code: str = '', name: str = '', sign: str = '') -> None:
         self.__currencies_dao.add(code, name, sign)
