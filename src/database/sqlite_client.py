@@ -24,7 +24,7 @@ class SQLiteClient(DBClient):
         cursor.execute(query, parameters)
         return cursor.fetchall()
 
-    def execute_ddl(self, query: str, parameters:tuple = ()) -> None:
+    def execute_ddl(self, query: str, parameters: tuple = ()) -> None:
         if self.__is_connection_open():
             self._execute(query, parameters)
             self._connection.commit()

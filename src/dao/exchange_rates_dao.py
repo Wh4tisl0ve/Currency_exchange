@@ -18,13 +18,16 @@ class ExchangeRatesDAO(BaseDAO):
 
         return all_exchange_rates
 
-    def get_concrete_exchange_rates(self, base_currency_id: int = 0, target_currency_id: int = 0) -> tuple:
+    def get_concrete_exchange_rate(self, base_currency_id: int = 0, target_currency_id: int = 0) -> ExchangeRatesDTO:
         query = f'SELECT * FROM {self._name_entity} WHERE BaseCurrencyID = {base_currency_id} AND TargetCurrencyID = {target_currency_id}'
         self._client_db.open_connection()
-        query_result = self._client_db.execute_dml(query)[0]
+        concrete_exchange_rate_fields = self._client_db.execute_dml(query)[0]
         self._client_db.close_connection()
 
-        return query_result
+        return ExchangeRatesDTO(id=concrete_exchange_rate_fields[0],
+                                base_currency_id=concrete_exchange_rate_fields[1],
+                                target_currency_id=concrete_exchange_rate_fields[2],
+                                rate=concrete_exchange_rate_fields[3])
 
     def add(self, base_currency_id: int, target_currency_id: int, rate: float):
         query = f"INSERT INTO {self._name_entity} (BaseCurrencyId, TargetCurrencyId, Rate) VALUES ('{base_currency_id}','{target_currency_id}','{rate}')"
@@ -37,3 +40,5 @@ class ExchangeRatesDAO(BaseDAO):
         self._client_db.open_connection()
         self._client_db.execute_ddl(query)
         self._client_db.close_connection()
+
+

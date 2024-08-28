@@ -30,5 +30,3 @@ class CurrenciesDAO(BaseDAO):
         self._client_db.execute_ddl(query)
         self._client_db.close_connection()
 
-    def update(self):
-        pass

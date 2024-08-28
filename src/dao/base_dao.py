@@ -28,7 +28,3 @@ class BaseDAO(ABC):
     @abstractmethod
     def add(self, *args):
         pass
-
-    @abstractmethod
-    def update(self, *args):
-        pass

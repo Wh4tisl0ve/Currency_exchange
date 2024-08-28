@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class ExchangeRatesDTO:
     id: int
     base_currency_id: int
