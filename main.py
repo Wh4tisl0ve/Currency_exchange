@@ -1,14 +1,14 @@
 import json
 
-from src.dao.currencies_dao import CurrenciesDAO
-from src.dao.exchange_rates_dao import ExchangeRatesDAO
-from src.database.sqlite_client import SQLiteClient
-from src.services.currency_service import CurrencyService
-from src.services.exchange_rates_service import ExchangeRatesService
+from app.dao.currencies_dao import CurrenciesDAO
+from app.dao.exchange_rates_dao import ExchangeRatesDAO
+from app.database.sqlite_client import SQLiteClient
+from app.services.currency_service import CurrencyService
+from app.services.exchange_rates_service import ExchangeRatesService
 
 
 def main():
-    f = open('src/database/config/config.json')
+    f = open('app/database/config/config.json')
     ditc = json.load(f)
     db = SQLiteClient(ditc)
 

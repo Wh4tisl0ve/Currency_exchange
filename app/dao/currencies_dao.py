@@ -1,6 +1,6 @@
-from src.dao.base_dao import BaseDAO
-from src.dto.currency_dto import CurrencyDTO
-from src.database.db_client import DBClient
+from app.dao.base_dao import BaseDAO
+from app.dto.currency_dto import CurrencyDTO
+from app.database.db_client import DBClient
 
 
 class CurrenciesDAO(BaseDAO):

@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('../data/currency_exchange.db')
+conn = sqlite3.connect('../app/data/currency_exchange.db')
 cursor = conn.cursor()
 
 # Создание таблиц

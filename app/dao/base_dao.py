@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from src.database.db_client import DBClient
+from app.database.db_client import DBClient
 
 
 class BaseDAO(ABC):

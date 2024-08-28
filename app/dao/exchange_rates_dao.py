@@ -1,6 +1,6 @@
-from src.dao.base_dao import BaseDAO
-from src.dto.exchange_rates_dto import ExchangeRatesDTO
-from src.database.db_client import DBClient
+from app.dao.base_dao import BaseDAO
+from app.dto.exchange_rates_dto import ExchangeRatesDTO
+from app.database.db_client import DBClient
 
 
 class ExchangeRatesDAO(BaseDAO):

@@ -1,6 +1,6 @@
-from src.dao.currencies_dao import CurrenciesDAO
-from src.dao.exchange_rates_dao import ExchangeRatesDAO
-from src.dto.exchange_rates_dto import ExchangeRatesDTO
+from app.dao.currencies_dao import CurrenciesDAO
+from app.dao.exchange_rates_dao import ExchangeRatesDAO
+from app.dto.exchange_rates_dto import ExchangeRatesDTO
 
 
 class ExchangeRatesService:
@@ -38,12 +38,12 @@ class ExchangeRatesService:
         target_currency = self.__currencies_dao.get_currency(target_currency_code)
 
         direct_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, target_currency.id)
-        reverse_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, target_currency.id)
+        reverse_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(target_currency.id, base_currency.id)
 
         if direct_exchange_rate is not None:
             converted_amount = direct_exchange_rate.rate * amount
         elif reverse_exchange_rate is not None:
-            converted_amount = reverse_exchange_rate.rate * amount
+            converted_amount = amount / reverse_exchange_rate.rate
         else:
             converted_amount = self.exchange_via_usd(base_currency, target_currency, amount)
 

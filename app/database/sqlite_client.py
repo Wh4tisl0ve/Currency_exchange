@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3 import DatabaseError
-from src.database.db_client import DBClient
+from app.database.db_client import DBClient
 
 
 class SQLiteClient(DBClient):

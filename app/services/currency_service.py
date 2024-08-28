@@ -1,5 +1,5 @@
-from src.dao.currencies_dao import CurrenciesDAO
-from src.dto.currency_dto import CurrencyDTO
+from app.dao.currencies_dao import CurrenciesDAO
+from app.dto.currency_dto import CurrencyDTO
 
 
 class CurrencyService:
