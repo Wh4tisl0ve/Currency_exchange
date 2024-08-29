@@ -1,6 +1,5 @@
+from src.app.database.db_client import DBClient
 from abc import abstractmethod, ABC
-
-from app.database.db_client import DBClient
 
 
 class BaseDAO(ABC):
@@ -26,5 +25,5 @@ class BaseDAO(ABC):
         return query_result
 
     @abstractmethod
-    def add(self, *args):
+    def add(self, *args, **kwargs):
         pass

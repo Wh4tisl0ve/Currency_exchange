@@ -1,6 +1,7 @@
-from app.dao.currencies_dao import CurrenciesDAO
-from app.dao.exchange_rates_dao import ExchangeRatesDAO
-from app.dto.exchange_rates_dto import ExchangeRatesDTO
+from src.app.dao.currencies_dao import CurrenciesDAO
+from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
+from src.app.dto.response.currency_response import CurrencyResponse
+from src.app.dto.response.exchange_rates_response import ExchangeRatesResponse
 
 
 class ExchangeRatesService:
@@ -8,10 +9,10 @@ class ExchangeRatesService:
         self.__exchange_rates_dao = exchange_rates_dao
         self.__currencies_dao = currencies_dao
 
-    def get_all_exchange_rates(self) -> list[ExchangeRatesDTO]:
+    def get_all_exchange_rates(self) -> list[ExchangeRatesResponse]:
         return self.__exchange_rates_dao.get_all_exchange_rates()
 
-    def get_concrete_exchange_rate(self, currency_pair: str) -> ExchangeRatesDTO:
+    def get_concrete_exchange_rate(self, currency_pair: str) -> ExchangeRatesResponse:
         base_currency_code, target_currency_code = currency_pair[:3], currency_pair[3:]
 
         base_currency = self.__currencies_dao.get_currency(base_currency_code)
@@ -47,7 +48,10 @@ class ExchangeRatesService:
         else:
             converted_amount = self.exchange_via_usd(base_currency, target_currency, amount)
 
-    def exchange_via_usd(self, base_currency: CurrenciesDAO, target_currency: CurrenciesDAO, amount: float) -> float:
+        return converted_amount
+
+    def exchange_via_usd(self, base_currency: CurrencyResponse, target_currency: CurrencyResponse,
+                         amount: float) -> float:
         usd_currency = self.__currencies_dao.get_currency('USD')
         base_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, usd_currency.id)
         target_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(usd_currency.id, target_currency.id)
