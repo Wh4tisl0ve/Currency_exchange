@@ -11,5 +11,3 @@ class ExchangerResponse:
     amount: float
     converted_amount: float
 
-    def to_dict(self):
-        return self.to_dict()

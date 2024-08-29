@@ -7,6 +7,3 @@ class CurrencyResponse:
     name: str
     code: str
     sign: str
-
-    def to_dict(self):
-        return self.to_dict()
