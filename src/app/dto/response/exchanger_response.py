@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
-from src.app.dto.response.currency_response import CurrencyResponse
+from src.app.dto.currency_dto import CurrencyDTO
 
 
 @dataclass(frozen=True)
 class ExchangerResponse:
-    base_currency: CurrencyResponse
-    target_currency: CurrencyResponse
+    base_currency: CurrencyDTO
+    target_currency: CurrencyDTO
     rate: float
     amount: float
     converted_amount: float

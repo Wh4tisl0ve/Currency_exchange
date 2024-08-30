@@ -21,10 +21,8 @@ def main():
     ex_service = ExchangeRatesService(ex_dao, ex_mapper)
 
     cur_service = CurrencyService(cur_dao, cur_mapper)
-    cur_service.get_concrete_currency('USD')
-    cur_service.get_concrete_currency('RUB')
 
-    print(ex_service.get_all_exchange_rates())
+    print(ex_service.get_exchange_rate(cur_service.get_concrete_currency('UsD'), cur_service.get_concrete_currency('rub')))
 
 
 if __name__ == '__main__':
