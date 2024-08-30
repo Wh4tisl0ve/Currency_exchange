@@ -7,7 +7,7 @@ class ExchangeRatesDAO(BaseDAO):
     def __init__(self, db_client: DBClient):
         super().__init__(db_client, 'ExchangeRates')
 
-    def get_all_exchange_rates(self) -> tuple:
+    def get_all_exchange_rates(self) -> list[tuple]:
         query = '''SELECT er.id, base.*, target.*, er.rate
                    FROM ExchangeRates er
                    JOIN Currencies as base ON er.BaseCurrencyId = base.id

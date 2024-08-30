@@ -14,19 +14,8 @@ class ExchangeRatesService:
 
     def get_all_exchange_rates(self) -> list[ExchangeRatesResponse]:
         exchange_rates_data = self.__exchange_rates_dao.get_all_exchange_rates()
-        exchange_rates_dto = []
-        for ex_rates in exchange_rates_data:
-            exchange_rates_dto.append(ExchangeRatesResponse(id=ex_rates[0],
-                                                            base_currency=CurrencyResponse(id=ex_rates[1],
-                                                                                           name=ex_rates[2],
-                                                                                           code=ex_rates[3],
-                                                                                           sign=ex_rates[4]),
-                                                            target_currency=CurrencyResponse(id=ex_rates[5],
-                                                                                             name=ex_rates[6],
-                                                                                             code=ex_rates[7],
-                                                                                             sign=ex_rates[8]),
-                                                            rate=ex_rates[9]))
-        return exchange_rates_dto
+
+        return [self.__exchange_rate_mapper.tuple_to_dto(ex_rates) for ex_rates in exchange_rates_data]
 
     def get_exchange_rate(self, base_currency: CurrencyResponse,
                           target_currency: CurrencyResponse) -> ExchangeRatesResponse:
