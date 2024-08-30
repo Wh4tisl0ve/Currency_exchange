@@ -7,18 +7,20 @@ class ExchangeRatesDAO(BaseDAO):
     def __init__(self, db_client: DBClient):
         super().__init__(db_client, 'ExchangeRates')
 
-    def get_all_exchange_rates(self) -> list[ExchangeRate]:
-        list_all_exchange_rates = self._get_all_entities()
+    def get_all_exchange_rates(self) -> tuple:
+        query = '''SELECT er.id, base.*, target.*, er.rate
+                   FROM ExchangeRates er
+                   JOIN Currencies as base ON er.BaseCurrencyId = base.id
+                   JOIN Currencies as target ON er.TargetCurrencyId = target.id
+                                        '''
 
-        all_exchange_rates = [ExchangeRate(id=ex_rate[0],
-                                           base_currency_id=ex_rate[1],
-                                           target_currency_id=ex_rate[2],
-                                           rate=ex_rate[3])
-                              for ex_rate in list_all_exchange_rates]
+        self._client_db.open_connection()
+        list_all_exchange_rates = self._client_db.execute_dml(query)
+        self._client_db.close_connection()
 
-        return all_exchange_rates
+        return list_all_exchange_rates
 
-    def get_exchange_rate(self, base_currency_id: int = 0, target_currency_id: int = 0) -> ExchangeRate:
+    def get_exchange_rate(self, base_currency_id: int, target_currency_id: int) -> ExchangeRate:
         query = f'SELECT * FROM {self._name_entity} WHERE BaseCurrencyID = {base_currency_id} AND TargetCurrencyID = {target_currency_id}'
         self._client_db.open_connection()
         concrete_exchange_rate_fields = self._client_db.execute_dml(query)[0]

@@ -10,4 +10,7 @@ class ExchangeRatesMapper(Mapper):
         return ExchangeRate(id=0, name=dto.b, code=dto.code, sign=dto.sign)
 
     def entity_to_dto(self, entity: ExchangeRate, base_currency: CurrencyResponse, target_currency: CurrencyResponse) -> ExchangeRatesResponse:
-        return ExchangeRatesResponse(id=entity.id, base_currency=base_currency, target_currency= target_currency, rate=entity.rate)
+        return ExchangeRatesResponse(id=entity.id,
+                                     base_currency=base_currency,
+                                     target_currency=target_currency,
+                                     rate=entity.rate)
