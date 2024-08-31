@@ -1,5 +1,4 @@
 from src.app.dao.base_dao import BaseDAO
-from src.app.dto.currency_dto import CurrencyDTO
 from src.app.entities.currency import Currency
 from src.app.database.db_client import DBClient
 
@@ -24,10 +23,12 @@ class CurrenciesDAO(BaseDAO):
 
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
-    def add(self, currency_request: CurrencyDTO) -> None:
+    def add(self, currency: Currency) -> Currency:
         query = f'''INSERT INTO Currencies (Code, FullName, Sign) 
-                    VALUES ('{currency_request.code}','{currency_request.name}','{currency_request.sign}')'''
+                    VALUES ('{currency.code}','{currency.name}','{currency.sign}')'''
 
         self._client_db.open_connection()
         self._client_db.execute_ddl(query)
         self._client_db.close_connection()
+
+        return self.get_currency_by_code(currency.code)

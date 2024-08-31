@@ -1,3 +1,4 @@
+from src.app.dto.request.exchange_rates_req import ExchangeRatesReq
 from src.app.dto.request.exchange_rates_request import ExchangeRatesRequest
 from src.app.dto.currency_dto import CurrencyDTO
 from src.app.dto.response.exchange_rates_response import ExchangeRatesResponse
@@ -6,11 +7,13 @@ from src.app.mappers.mapper import Mapper
 
 
 class ExchangeRatesMapper(Mapper):
-    def dto_to_entity(self, dto: ExchangeRatesRequest) -> ExchangeRate:
-        return ExchangeRate(id=0, name=dto.b, code=dto.code, sign=dto.sign)
+    def dto_to_entity(self, dto: ExchangeRatesReq) -> ExchangeRate:
+        return ExchangeRate(id=0,
+                            base_currency_id=dto.base_currency.id,
+                            target_currency_id=dto.base_currency.id,
+                            rate=dto.rate)
 
-    def entity_to_dto(self, entity: ExchangeRate, base_currency: CurrencyDTO,
-                      target_currency: CurrencyDTO) -> ExchangeRatesResponse:
+    def entity_to_dto(self, entity: ExchangeRate) -> ExchangeRatesResponse:
         return ExchangeRatesResponse(id=entity.id,
                                      base_currency=base_currency,
                                      target_currency=target_currency,

@@ -1,6 +1,5 @@
-from dataclasses import dataclass
-
 from src.app.dto.currency_dto import CurrencyDTO
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
