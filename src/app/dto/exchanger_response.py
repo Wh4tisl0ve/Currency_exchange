@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from src.app.dto.currency_dto import CurrencyDTO
 from dataclasses import dataclass
 
@@ -6,7 +8,7 @@ from dataclasses import dataclass
 class ExchangerResponse:
     base_currency: CurrencyDTO
     target_currency: CurrencyDTO
-    rate: float
-    amount: float
-    converted_amount: float
+    rate: Decimal
+    amount: Decimal
+    converted_amount: Decimal
 

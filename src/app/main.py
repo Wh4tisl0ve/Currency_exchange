@@ -1,7 +1,11 @@
+from decimal import Decimal
+
 from src.app.dao.currencies_dao import CurrenciesDAO
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
 from src.app.database.sqlite_client import SQLiteClient
 from src.app.dto.currency_dto import CurrencyDTO
+from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
+from src.app.dto.exchanger_request import ExchangerRequest
 from src.app.mappers.currency_mapper import CurrencyMapper
 from src.app.mappers.exchange_rates_mapper import ExchangeRatesMapper
 from src.app.services.currency_service import CurrencyService
@@ -26,7 +30,11 @@ def main():
 
     ex_rates_service = ExchangerService(ex_dao, cur_dao)
 
-    print(cur_service.add_currency(CurrencyDTO(id=0,name='Turkish', code='TUR', sign='T')))
+    exchanger_service = ExchangerService(ex_dao, cur_dao)
+
+    print(exchanger_service.perform_currency_exchange(
+        ExchangerRequest(cur_service.get_concrete_currency('CNY'), cur_service.get_concrete_currency('usd'),
+                         Decimal(5))))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,5 @@
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
-from src.app.dto.currency_dto import CurrencyDTO
-from src.app.dto.request.exchange_rates_req import ExchangeRatesReq
-from src.app.dto.response.exchange_rates_response import ExchangeRatesResponse
+from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
 from src.app.mappers.exchange_rates_mapper import ExchangeRatesMapper
 
 
@@ -10,29 +8,25 @@ class ExchangeRatesService:
         self.__exchange_rates_dao = exchange_rates_dao
         self.__exchange_rate_mapper = exchange_rate_mapper
 
-    def get_all_exchange_rates(self) -> list[ExchangeRatesResponse]:
+    def get_all_exchange_rates(self) -> list[ExchangeRatesDTO]:
         exchange_rates_data = self.__exchange_rates_dao.get_all_exchange_rates()
 
         return [self.__exchange_rate_mapper.tuple_to_dto(ex_rates) for ex_rates in exchange_rates_data]
 
-    def get_exchange_rate(self, exchange_rates_request: ExchangeRatesReq) -> ExchangeRatesResponse:
+    def get_exchange_rate(self, exchange_rates_request: ExchangeRatesDTO) -> ExchangeRatesDTO:
         exchange_rate_entity = self.__exchange_rate_mapper.dto_to_entity(exchange_rates_request)
-        exchange_rate = self.__exchange_rates_dao.get_exchange_rate(exchange_rate_entity)
+        exchange_rate_entity = self.__exchange_rates_dao.get_exchange_rate(exchange_rate_entity)
 
-        return self.__exchange_rate_mapper.entity_to_dto(exchange_rate)
+        return self.__exchange_rate_mapper.entity_to_dto(exchange_rate_entity)
 
-    def add_exchange_rate(self, base_currency: CurrencyDTO, target_currency: CurrencyDTO,
-                          rate: float) -> ExchangeRatesResponse:
-        self.__exchange_rates_dao.add(base_currency.id, target_currency.id, rate)
+    def add_exchange_rate(self, exchange_rates_request: ExchangeRatesDTO) -> ExchangeRatesDTO:
+        exchange_rate_entity = self.__exchange_rate_mapper.dto_to_entity(exchange_rates_request)
+        exchange_rate_entity = self.__exchange_rates_dao.add(exchange_rate_entity)
 
-        exchange_rate_entity = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, target_currency.id)
+        return self.__exchange_rate_mapper.entity_to_dto(exchange_rate_entity)
 
-        return self.__exchange_rate_mapper.entity_to_dto(exchange_rate_entity, base_currency, target_currency)
+    def update_exchange_rate(self, exchange_rates_request: ExchangeRatesDTO) -> ExchangeRatesDTO:
+        exchange_rate_entity = self.__exchange_rate_mapper.dto_to_entity(exchange_rates_request)
+        exchange_rate_entity = self.__exchange_rates_dao.update(exchange_rate_entity)
 
-    def update_exchange_rate(self, base_currency: CurrencyDTO, target_currency: CurrencyDTO,
-                             rate: float) -> ExchangeRatesResponse:
-        self.__exchange_rates_dao.update(base_currency.id, target_currency.id, rate)
-
-        exchange_rate_entity = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, target_currency.id)
-
-        return self.__exchange_rate_mapper.entity_to_dto(exchange_rate_entity, base_currency, target_currency)
+        return self.__exchange_rate_mapper.entity_to_dto(exchange_rate_entity)

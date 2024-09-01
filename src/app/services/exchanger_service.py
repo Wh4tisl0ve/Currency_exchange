@@ -1,7 +1,10 @@
+from decimal import Decimal
+
 from src.app.dao.currencies_dao import CurrenciesDAO
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
-from src.app.dto.currency_dto import CurrencyDTO
-from src.app.dto.response.exchanger_response import ExchangerResponse
+from src.app.dto.exchanger_request import ExchangerRequest
+from src.app.dto.exchanger_response import ExchangerResponse
+from src.app.entities.exchange_rate import ExchangeRate
 
 
 class ExchangerService:
@@ -9,28 +12,50 @@ class ExchangerService:
         self.__exchange_rates_dao = exchange_rates_dao
         self.__currencies_dao = currencies_dao
 
-    def perform_currency_exchange(self, base_currency: CurrencyDTO, target_currency: CurrencyDTO,
-                                  amount: float) -> ExchangerResponse:
-        direct_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, target_currency.id)
-        reverse_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(target_currency.id, base_currency.id)
+    def perform_currency_exchange(self, exchanger_request: ExchangerRequest) -> ExchangerResponse:
+        base_currency_id = exchanger_request.base_currency.id
+        target_currency_id = exchanger_request.target_currency.id
+        amount = Decimal(exchanger_request.amount)
 
-        if direct_exchange_rate is not None:
-            converted_amount = direct_exchange_rate.rate * amount
+        direct_exchange_rate_entity = self.__get_exchange_rate(base_currency_id, target_currency_id)
+        reverse_exchange_rate_entity = self.__get_exchange_rate(target_currency_id, base_currency_id)
+
+        direct_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(direct_exchange_rate_entity)
+        reverse_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(reverse_exchange_rate_entity)
+
+        if direct_exchange_rate:
+            converted_amount = Decimal(direct_exchange_rate.rate) * amount
             rate = direct_exchange_rate.rate
-        elif reverse_exchange_rate is not None:
+        elif reverse_exchange_rate:
             converted_amount = amount / reverse_exchange_rate.rate
             rate = reverse_exchange_rate.rate
         else:
-            converted_amount = self.__calc_amount_via_usd(base_currency, target_currency, amount)
+            converted_amount = self.__calc_amount_via_usd(exchanger_request)
             rate = converted_amount / amount
 
-        return ExchangerResponse(base_currency, target_currency, rate, amount, converted_amount)
+        converted_amount = converted_amount.quantize(Decimal('0.00001'))
+        return ExchangerResponse(exchanger_request.base_currency,
+                                 exchanger_request.target_currency,
+                                 rate,
+                                 exchanger_request.amount,
+                                 converted_amount)
 
-    def __calc_amount_via_usd(self, base_currency: CurrencyDTO, target_currency: CurrencyDTO,
-                              amount: float) -> float:
+    def __calc_amount_via_usd(self, exchanger_request: ExchangerRequest) -> Decimal:
         usd_currency = self.__currencies_dao.get_currency_by_code('USD')
-        base_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(base_currency.id, usd_currency.id)
-        target_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(usd_currency.id, target_currency.id)
 
-        converted_amount = (amount * base_usd_exchange_rate.rate) * target_usd_exchange_rate.rate
+        direct_exchange_rate_entity = self.__get_exchange_rate(exchanger_request.base_currency.id, usd_currency.id)
+        reverse_exchange_rate_entity = self.__get_exchange_rate(exchanger_request.target_currency.id, usd_currency.id)
+
+        base_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(direct_exchange_rate_entity)
+        target_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(reverse_exchange_rate_entity)
+
+        converted_amount = (exchanger_request.amount * base_usd_exchange_rate.rate) * target_usd_exchange_rate.rate
         return converted_amount
+
+    def __get_exchange_rate(self, base_currency_id: int, target_currency_id: int) -> ExchangeRate:
+        exchange_rate_entity = ExchangeRate(id=0,
+                                            base_currency_id=base_currency_id,
+                                            target_currency_id=target_currency_id,
+                                            rate=Decimal(0))
+        return self.__exchange_rates_dao.get_exchange_rate(exchange_rate_entity)
+
