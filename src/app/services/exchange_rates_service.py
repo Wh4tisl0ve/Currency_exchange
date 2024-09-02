@@ -11,7 +11,7 @@ class ExchangeRatesService:
     def get_all_exchange_rates(self) -> list[ExchangeRatesDTO]:
         exchange_rates_data = self.__exchange_rates_dao.get_all_exchange_rates()
 
-        return [self.__exchange_rate_mapper.tuple_to_dto(ex_rates) for ex_rates in exchange_rates_data]
+        return [self.__exchange_rate_mapper.tuple_to_dto(data) for data in exchange_rates_data]
 
     def get_exchange_rate(self, exchange_rates_request: ExchangeRatesDTO) -> ExchangeRatesDTO:
         exchange_rate_entity = self.__exchange_rate_mapper.dto_to_entity(exchange_rates_request)

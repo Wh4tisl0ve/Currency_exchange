@@ -15,5 +15,5 @@ class DBClient(ABC):
         pass
 
     @abstractmethod
-    def _execute(self, query, parameters=()) -> None:
+    def _execute_query(self, query, parameters=()) -> None:
         pass

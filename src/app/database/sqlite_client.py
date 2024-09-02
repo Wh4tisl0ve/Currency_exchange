@@ -19,20 +19,20 @@ class SQLiteClient(DBClient):
     def __is_connection_open(self) -> bool:
         return self._connection is not None
 
-    def _execute(self, query: str, parameters: tuple = ()) -> list:
+    def _execute_query(self, query: str, parameters: tuple = ()) -> list:
         cursor = self._connection.cursor()
         cursor.execute(query, parameters)
         return cursor.fetchall()
 
     def execute_ddl(self, query: str, parameters: tuple = ()) -> None:
         if self.__is_connection_open():
-            self._execute(query, parameters)
+            self._execute_query(query, parameters)
             self._connection.commit()
         else:
             raise DatabaseError('Подключение к БД было закрыто')
 
     def execute_dml(self, query: str) -> list:
         if self.__is_connection_open():
-            return self._execute(query)
+            return self._execute_query(query)
         else:
             raise DatabaseError('Подключение к БД было закрыто')

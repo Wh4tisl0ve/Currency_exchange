@@ -8,10 +8,10 @@ class CurrenciesDAO(BaseDAO):
         super().__init__(db_client, 'Currencies')
 
     def get_all_currencies(self) -> list[Currency]:
-        list_all_currencies = self._get_all_entities()
-        all_currencies = [Currency(id=cur[0], name=cur[1], code=cur[2], sign=cur[3]) for cur in list_all_currencies]
+        currencies = self._get_all_entities()
+        currencies_entity = [Currency(id=cur[0], name=cur[1], code=cur[2], sign=cur[3]) for cur in currencies]
 
-        return all_currencies
+        return currencies_entity
 
     def get_currency_by_code(self, currency_code: str = '') -> Currency:
         cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
