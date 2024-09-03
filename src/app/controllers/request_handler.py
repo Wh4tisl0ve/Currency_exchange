@@ -1,3 +1,5 @@
+import re
+
 from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
 
@@ -6,8 +8,9 @@ class RequestHandler(BaseHTTPRequestHandler):
     router = Router()
 
     def do_GET(self):
-        response = self.router.resolve(self.path, method='GET')
-        self._send_response(200, 'text/html', response('USD'))
+        print(self.path)
+        response = self.router.resolve(self.path.lower(), method='GET')
+        self._send_response(200, 'text/html', response)
 
     def do_POST(self):
         pass

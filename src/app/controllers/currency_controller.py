@@ -19,12 +19,9 @@ class CurrencyController:
             currencies = self.__service.get_all_currencies()
             return json.dumps([currency.to_dict() for currency in currencies], indent=4)
 
-        @self.__router.route('/currency', method='GET')
+        # сделать регистрацию '/currency' без шаблона <str:str:currency>, для этого поработать с регулярным
+        # выражением, а <str:str:currency> использовать как валидатор
+        @self.__router.route('/currency/<str:currency>', method='GET')
         def get_concrete_currencies(currency_code: str):
             currency = self.__service.get_concrete_currency(currency_code)
             return json.dumps(currency.to_dict(), indent=4)
-
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
-        self._send_response(200, 'application/json', post_data)
