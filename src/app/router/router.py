@@ -1,33 +1,26 @@
 import re
+from urllib.parse import urlparse
 
 
 class Router:
     def __init__(self):
         self.routes = {'GET': {}, 'POST': {}, 'PATCH': {}}
 
-    def route(self, path: str, method='GET'):
-        def wrapper(handler):
-            self.routes[method][path] = handler
+    def route(self, path: str, method: str = 'GET'):
+        def register_routes(handler):
+            self.routes[method][re.compile(path)] = handler
             return handler
 
-        return wrapper
+        return register_routes
 
-    def resolve(self, path, method='GET'):
-        params = self.split_url(path)
-        handler = self.routes.get(method).get(f'/{params[0]}')
-        if handler:
-            return handler(params[1])
-        else:
-            return self.not_found()
+    def resolve(self, path: str, method: str = 'GET'):
+        for url, handler in self.routes[method].items():
+            match = url.match(path)
+            if match:
+                return handler, match.groupdict()
 
-    def split_url(self, url: str):
-        pattern = r'^/([^/]+)/([^/]+)$'
-        match = re.match(pattern, url)
-        subpaths = match.groups()
-        if subpaths:
-            return subpaths
-        else:
-            return url
+        # exception
+        return self.not_found()
 
     def not_found(self) -> str:
         # возврат html template страницы

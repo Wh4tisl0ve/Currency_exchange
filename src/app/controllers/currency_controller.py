@@ -1,7 +1,4 @@
 import json
-import urllib
-
-from src.app.dao.currencies_dao import CurrenciesDAO
 from src.app.database.db_client import DBClient
 from src.app.router.router import Router
 from src.app.services.currency_service import CurrencyService
@@ -19,9 +16,7 @@ class CurrencyController:
             currencies = self.__service.get_all_currencies()
             return json.dumps([currency.to_dict() for currency in currencies], indent=4)
 
-        # сделать регистрацию '/currency' без шаблона <str:str:currency>, для этого поработать с регулярным
-        # выражением, а <str:str:currency> использовать как валидатор
-        @self.__router.route('/currency/<str:currency>', method='GET')
+        @self.__router.route(r'^/currency/(?P<currency_code>[a-zA-Z]{3})$', method='GET')
         def get_concrete_currencies(currency_code: str):
             currency = self.__service.get_concrete_currency(currency_code)
             return json.dumps(currency.to_dict(), indent=4)

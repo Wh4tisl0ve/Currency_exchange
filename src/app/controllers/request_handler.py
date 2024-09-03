@@ -1,5 +1,3 @@
-import re
-
 from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
 
@@ -8,9 +6,12 @@ class RequestHandler(BaseHTTPRequestHandler):
     router = Router()
 
     def do_GET(self):
-        print(self.path)
-        response = self.router.resolve(self.path.lower(), method='GET')
-        self._send_response(200, 'text/html', response)
+        try:
+            handler, params = self.router.resolve(self.path, method='GET')
+            response = handler(**params)
+            self._send_response(200, 'application/json', response)
+        except Exception:
+            self._send_response(404, 'text/html', '<h1>404 Not found</h1>')
 
     def do_POST(self):
         pass
