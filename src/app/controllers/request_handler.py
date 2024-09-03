@@ -1,17 +1,18 @@
-from abc import ABC, abstractmethod
+from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
 
 
-class BaseController(BaseHTTPRequestHandler):
-    @abstractmethod
-    def do_GET(self):
-        pass
+class RequestHandler(BaseHTTPRequestHandler):
+    router = Router()
 
-    @abstractmethod
+    def do_GET(self):
+        response = self.router.resolve(self.path, method='GET')
+        print(response())
+        self._send_response(200, 'text/html', 'Ura!')
+
     def do_POST(self):
         pass
 
-    @abstractmethod
     def do_PATCH(self):
         pass
 
