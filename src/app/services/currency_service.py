@@ -1,12 +1,13 @@
+from src.app.database.db_client import DBClient
 from src.app.mappers.currency_mapper import CurrencyMapper
 from src.app.dao.currencies_dao import CurrenciesDAO
 from src.app.dto.currency_dto import CurrencyDTO
 
 
 class CurrencyService:
-    def __init__(self, currencies_dao: CurrenciesDAO, currency_mapper: CurrencyMapper):
-        self.__currencies_dao = currencies_dao
-        self.__currency_mapper = currency_mapper
+    def __init__(self, db_client: DBClient):
+        self.__currencies_dao = CurrenciesDAO(db_client)
+        self.__currency_mapper = CurrencyMapper()
 
     def get_all_currencies(self) -> list[CurrencyDTO]:
         currencies = self.__currencies_dao.get_all_currencies()

@@ -1,3 +1,5 @@
+import json
+
 from src.app.dto.currency_dto import CurrencyDTO
 from src.app.entities.currency import Currency
 from src.app.mappers.mapper import Mapper
@@ -9,3 +11,6 @@ class CurrencyMapper(Mapper):
 
     def entity_to_dto(self, entity: Currency) -> CurrencyDTO:
         return CurrencyDTO(id=entity.id, name=entity.name, code=entity.code, sign=entity.sign)
+
+    def dto_to_json(self, dto: CurrencyDTO) -> json:
+        return dto.to_dict()

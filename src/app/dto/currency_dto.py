@@ -7,3 +7,11 @@ class CurrencyDTO:
     name: str
     code: str
     sign: str
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "code": self.code,
+            "sign": self.sign
+        }
