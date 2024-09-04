@@ -24,9 +24,9 @@ class CurrencyController:
 
         @self.__router.route('/currencies', method='POST')
         def add_currency(request: dict):
-            currency_request = CurrencyDTO(id=0,
-                                           name=request.get('name'),
-                                           code=request.get('code'),
-                                           sign=request.get('sign'))
-            added_currency = self.__service.add_currency(currency_request)
+            request_dto = CurrencyDTO(name=request.get('name'),
+                                      code=request.get('code'),
+                                      sign=request.get('sign'))
+
+            added_currency = self.__service.add_currency(request_dto)
             return json.dumps(added_currency.to_dict(), indent=4)

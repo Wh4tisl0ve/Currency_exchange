@@ -19,11 +19,6 @@ class CurrencyService:
 
         return self.__currency_mapper.entity_to_dto(concrete_currency)
 
-    def get_currency_by_id(self, id: int) -> CurrencyDTO:
-        concrete_currency = self.__currencies_dao.get_currency_by_id(id)
-
-        return self.__currency_mapper.entity_to_dto(concrete_currency)
-
     def add_currency(self, currency_request: CurrencyDTO) -> CurrencyDTO:
         currency_entity = self.__currency_mapper.dto_to_entity(currency_request)
         currency_entity = self.__currencies_dao.add(currency_entity)

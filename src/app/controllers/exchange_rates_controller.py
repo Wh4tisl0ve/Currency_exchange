@@ -1,6 +1,8 @@
 import json
+from decimal import Decimal
+from urllib.parse import urlparse
+
 from src.app.database.db_client import DBClient
-from src.app.dto.currency_dto import CurrencyDTO
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
 from src.app.router.router import Router
 from src.app.services.currency_service import CurrencyService
@@ -34,11 +36,38 @@ class ExchangeRatesController:
                                                     rate=exchange_rate.rate)
             return json.dumps(result_exchange_rate.to_dict(), indent=4)
 
-        @self.__router.route('/currencies', method='POST')
-        def add_currency(request: dict):
-            currency_request = CurrencyDTO(id=0,
-                                           name=request.get('name'),
-                                           code=request.get('code'),
-                                           sign=request.get('sign'))
-            added_currency = self.__exchange_rates_service.add_currency(currency_request)
-            return json.dumps(added_currency.to_dict(), indent=4)
+        @self.__router.route('/exchangeRates', method='POST')
+        def add_exchange_rates(request: dict):
+            base_currency = self.__currency_service.get_concrete_currency(request.get('baseCurrencyCode'))
+            target_currency = self.__currency_service.get_concrete_currency(request.get('targetCurrencyCode'))
+
+            request_dto = ExchangeRatesDTO(base_currency=base_currency,
+                                           target_currency=target_currency,
+                                           rate=request['rate'])
+
+            added_exchange_rate = self.__exchange_rates_service.add_exchange_rate(request_dto)
+
+            result_exchange_rate = ExchangeRatesDTO(id=added_exchange_rate.id,
+                                                    base_currency=base_currency,
+                                                    target_currency=target_currency,
+                                                    rate=added_exchange_rate.rate)
+            return json.dumps(result_exchange_rate.to_dict(), indent=4)
+
+        @self.__router.route(r'^/exchangeRate/(?P<currency_pair>[a-zA-Z]{6})$', method='PATCH')
+        def update_exchange_rate(request: dict):
+            currency_pair = request['path'].split('/')[-1]
+            base_currency = self.__currency_service.get_concrete_currency(currency_pair[:3])
+            target_currency = self.__currency_service.get_concrete_currency(currency_pair[3:])
+
+            request_dto = ExchangeRatesDTO(base_currency=base_currency,
+                                           target_currency=target_currency,
+                                           rate=request['rate'])
+            updated_exchange_rate = self.__exchange_rates_service.update_exchange_rate(request_dto)
+
+            result_exchange_rate = ExchangeRatesDTO(id=updated_exchange_rate .id,
+                                                    base_currency=base_currency,
+                                                    target_currency=target_currency,
+                                                    rate=updated_exchange_rate.rate)
+
+            return json.dumps(result_exchange_rate.to_dict(), indent=4)
+
