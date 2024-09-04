@@ -1,7 +1,4 @@
 import json
-from decimal import Decimal
-from urllib.parse import urlparse
-
 from src.app.database.db_client import DBClient
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
 from src.app.router.router import Router

@@ -3,6 +3,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from src.app.controllers.currency_controller import CurrencyController
 from src.app.controllers.exchange_rates_controller import ExchangeRatesController
+from src.app.controllers.exchanger_controller import ExchangerController
 from src.app.controllers.request_handler import RequestHandler
 from src.app.database.sqlite_client import SQLiteClient
 
@@ -16,6 +17,7 @@ db_client = SQLiteClient(config)
 router = RequestHandler.router
 currency_controller = CurrencyController(db_client, router)
 exchange_rates_controller = ExchangeRatesController(db_client, router)
+exchanger_controller = ExchangerController(db_client, router)
 
 
 def run(server_class=HTTPServer, handler_class=RequestHandler, port=8080):

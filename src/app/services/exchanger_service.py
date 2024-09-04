@@ -2,15 +2,16 @@ from decimal import Decimal
 
 from src.app.dao.currencies_dao import CurrenciesDAO
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
+from src.app.database.db_client import DBClient
 from src.app.dto.request.exchanger_request import ExchangerRequest
 from src.app.dto.response.exchanger_response import ExchangerResponse
 from src.app.entities.exchange_rate import ExchangeRate
 
 
 class ExchangerService:
-    def __init__(self, exchange_rates_dao: ExchangeRatesDAO, currencies_dao: CurrenciesDAO):
-        self.__exchange_rates_dao = exchange_rates_dao
-        self.__currencies_dao = currencies_dao
+    def __init__(self, db_client: DBClient):
+        self.__exchange_rates_dao = ExchangeRatesDAO(db_client)
+        self.__currencies_dao = CurrenciesDAO(db_client)
 
     def perform_currency_exchange(self, exchanger_request: ExchangerRequest) -> ExchangerResponse:
         base_currency_id = exchanger_request.base_currency.id

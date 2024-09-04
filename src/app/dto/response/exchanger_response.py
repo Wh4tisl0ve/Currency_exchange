@@ -12,3 +12,9 @@ class ExchangerResponse:
     amount: Decimal
     converted_amount: Decimal
 
+    def to_dict(self):
+        return {"baseCurrency": self.base_currency.to_dict(),
+                "targetCurrency": self.target_currency.to_dict(),
+                "rate": self.rate,
+                "amount": float(self.amount),
+                "convertedAmount": float(self.converted_amount)}

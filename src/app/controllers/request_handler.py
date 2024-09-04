@@ -1,4 +1,4 @@
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlparse
 
 from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
@@ -10,7 +10,13 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             handler, params = self.router.resolve(self.path, method='GET')
-            response = handler(**params)
+            query_params = parse_qs(urlparse(self.path).query)
+            if query_params:
+                query_params = {k: v[0] for k, v in query_params.items()}
+                params = query_params
+                response = handler(params)
+            else:
+                response = handler(**params)
             self._send_response(200, 'application/json', response)
         except Exception:
             self._send_response(404, 'text/html', '<h1>404 Not found</h1>')
