@@ -13,8 +13,8 @@ class ExchangeRatesMapper(Mapper):
 
     def entity_to_dto(self, entity: ExchangeRate) -> ExchangeRatesDTO:
         return ExchangeRatesDTO(id=entity.id,
-                                base_currency=CurrencyDTO(entity.base_currency_id, '', '', ''),
-                                target_currency=CurrencyDTO(entity.target_currency_id, '', '', ''),
+                                base_currency=CurrencyDTO(id=entity.base_currency_id),
+                                target_currency=CurrencyDTO(id=entity.target_currency_id),
                                 rate=entity.rate)
 
     def tuple_to_dto(self, data: tuple) -> ExchangeRatesDTO:
@@ -23,4 +23,7 @@ class ExchangeRatesMapper(Mapper):
         base_currency = CurrencyDTO(base_id, base_name, base_code, base_sign)
         target_currency = CurrencyDTO(target_id, target_name, target_code, target_sign)
 
-        return ExchangeRatesDTO(ex_id, base_currency, target_currency, rate)
+        return ExchangeRatesDTO(base_currency=base_currency,
+                                target_currency=target_currency,
+                                id=ex_id,
+                                rate=rate)

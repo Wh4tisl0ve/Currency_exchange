@@ -1,12 +1,13 @@
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
+from src.app.database.db_client import DBClient
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
 from src.app.mappers.exchange_rates_mapper import ExchangeRatesMapper
 
 
 class ExchangeRatesService:
-    def __init__(self, exchange_rates_dao: ExchangeRatesDAO, exchange_rate_mapper: ExchangeRatesMapper):
-        self.__exchange_rates_dao = exchange_rates_dao
-        self.__exchange_rate_mapper = exchange_rate_mapper
+    def __init__(self, db_client: DBClient):
+        self.__exchange_rates_dao = ExchangeRatesDAO(db_client)
+        self.__exchange_rate_mapper = ExchangeRatesMapper()
 
     def get_all_exchange_rates(self) -> list[ExchangeRatesDTO]:
         exchange_rates_data = self.__exchange_rates_dao.get_all_exchange_rates()

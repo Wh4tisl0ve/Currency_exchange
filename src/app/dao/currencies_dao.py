@@ -18,6 +18,11 @@ class CurrenciesDAO(BaseDAO):
 
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
+    def get_currency_by_id(self, id: int) -> Currency:
+        cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(str(id), 'ID')
+
+        return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
+
     def add(self, currency: Currency) -> Currency:
         query = f'''INSERT INTO Currencies (Code, FullName, Sign) 
                     VALUES ('{currency.code}','{currency.name}','{currency.sign}')'''

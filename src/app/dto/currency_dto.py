@@ -3,10 +3,10 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class CurrencyDTO:
-    id: int
-    name: str
-    code: str
-    sign: str
+    id: int = 0
+    name: str = ''
+    code: str = ''
+    sign: str = ''
 
     def to_dict(self) -> dict:
         return {

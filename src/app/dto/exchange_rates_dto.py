@@ -6,7 +6,14 @@ from src.app.dto.currency_dto import CurrencyDTO
 
 @dataclass(frozen=True)
 class ExchangeRatesDTO:
-    id: int
     base_currency: CurrencyDTO
     target_currency: CurrencyDTO
-    rate: Decimal
+    id: int = 0
+    rate: Decimal = Decimal(0)
+
+    def to_dict(self) -> dict:
+        return {"id": self.id,
+                "baseCurrency": self.base_currency.to_dict(),
+                "targetCurrency": self.target_currency.to_dict(),
+                "rate": self.rate
+                }

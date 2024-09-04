@@ -19,7 +19,7 @@ class Router:
                 return handler, match.groupdict()
 
         # exception
-        return self.not_found()
+        return self.not_found
 
     def not_found(self) -> str:
         # возврат html template страницы

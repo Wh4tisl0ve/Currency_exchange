@@ -7,4 +7,4 @@ from decimal import Decimal
 class ExchangerRequest:
     base_currency: CurrencyDTO
     target_currency: CurrencyDTO
-    amount: Decimal
+    amount: Decimal = Decimal(0)
