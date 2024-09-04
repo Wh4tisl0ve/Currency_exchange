@@ -1,5 +1,6 @@
 import json
 from src.app.database.db_client import DBClient
+from src.app.dto.currency_dto import CurrencyDTO
 from src.app.router.router import Router
 from src.app.services.currency_service import CurrencyService
 
@@ -20,3 +21,12 @@ class CurrencyController:
         def get_concrete_currencies(currency_code: str):
             currency = self.__service.get_concrete_currency(currency_code)
             return json.dumps(currency.to_dict(), indent=4)
+
+        @self.__router.route('/currencies', method='POST')
+        def add_currency(request: dict):
+            currency_request = CurrencyDTO(id=0,
+                                           name=request.get('name'),
+                                           code=request.get('code'),
+                                           sign=request.get('sign'))
+            added_currency = self.__service.add_currency(currency_request)
+            return json.dumps(added_currency.to_dict(), indent=4)
