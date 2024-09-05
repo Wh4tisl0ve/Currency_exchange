@@ -1,6 +1,8 @@
 from src.app.database.db_client import DBClient
 from abc import abstractmethod, ABC
 
+from src.app.exceptions.not_found_error import NotFoundError
+
 
 class BaseDAO(ABC):
     def __init__(self, db_client: DBClient, name_entity: str):
@@ -19,7 +21,10 @@ class BaseDAO(ABC):
         query = f"SELECT * FROM {self._name_entity} WHERE {field_find} LIKE '{name_entity}'"
 
         self._client_db.open_connection()
-        entity = self._client_db.execute_dml(query)[0]
+        try:
+            entity = self._client_db.execute_dml(query)[0]
+        except IndexError:
+            raise NotFoundError('Данные не найдены', 404)
         self._client_db.close_connection()
 
         return entity

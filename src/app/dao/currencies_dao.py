@@ -1,6 +1,10 @@
 from src.app.dao.base_dao import BaseDAO
 from src.app.entities.currency import Currency
 from src.app.database.db_client import DBClient
+from src.app.exceptions.constraint_violation_exception import ConstraintViolationException
+from src.app.exceptions.currency_error.currency_already_exists import CurrencyAlreadyExists
+from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
+from src.app.exceptions.not_found_error import NotFoundError
 
 
 class CurrenciesDAO(BaseDAO):
@@ -14,8 +18,10 @@ class CurrenciesDAO(BaseDAO):
         return currencies_entity
 
     def get_currency_by_code(self, currency_code: str = '') -> Currency:
-        cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
-
+        try:
+            cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
+        except NotFoundError:
+            raise CurrencyNotFoundError('Валюта не найдена', 404)
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
     def add(self, currency: Currency) -> Currency:
@@ -23,7 +29,10 @@ class CurrenciesDAO(BaseDAO):
                     VALUES ('{currency.code}','{currency.name}','{currency.sign}')'''
 
         self._client_db.open_connection()
-        self._client_db.execute_ddl(query)
+        try:
+            self._client_db.execute_ddl(query)
+        except ConstraintViolationException:
+            raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует', 409)
         self._client_db.close_connection()
 
         return self.get_currency_by_code(currency.code)

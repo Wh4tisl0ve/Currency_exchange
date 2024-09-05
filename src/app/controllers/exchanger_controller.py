@@ -1,4 +1,6 @@
 import json
+from decimal import Decimal
+
 from src.app.database.db_client import DBClient
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
 from src.app.dto.request.exchanger_request import ExchangerRequest
@@ -21,7 +23,7 @@ class ExchangerController:
             target_currency = self.__currency_service.get_concrete_currency(request.get('to'))
             request = ExchangerRequest(base_currency=base_currency,
                                        target_currency=target_currency,
-                                       amount=request.get('amount'))
+                                       amount=Decimal(request.get('amount')))
             exchanger_response = self.__exchanger_service.perform_currency_exchange(request)
             return json.dumps(exchanger_response.to_dict(), indent=4)
 
