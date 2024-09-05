@@ -1,5 +1,7 @@
 import re
 
+from src.app.exceptions.incorrect_request_error import IncorrectRequestError
+
 
 class Router:
     def __init__(self):
@@ -18,8 +20,7 @@ class Router:
             if match:
                 return handler, match.groupdict()
 
-        # exception
-        return self.not_found
+        raise IncorrectRequestError('Неверный формат запроса', 400)
 
     def not_found(self) -> str:
         # возврат html template страницы

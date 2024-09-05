@@ -21,7 +21,7 @@ class CurrenciesDAO(BaseDAO):
         try:
             cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
         except NotFoundError:
-            raise CurrencyNotFoundError('Валюта не найдена', 404)
+            raise CurrencyNotFoundError('Код валюты не соответствует ни одной валюте', 404)
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
     def add(self, currency: Currency) -> Currency:

@@ -1,7 +1,4 @@
-from src.app.exceptions.db_error.database_error import DataBaseError
-
-
-class ConstraintViolationException(Exception):
+class IncorrectRequestError(Exception):
     def __init__(self, message: str, code: int):
         super().__init__(message)
         self.__code = code

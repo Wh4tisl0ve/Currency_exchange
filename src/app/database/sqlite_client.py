@@ -1,16 +1,22 @@
 import sqlite3
-from sqlite3 import IntegrityError
+from sqlite3 import IntegrityError, OperationalError, DatabaseError
 
 from src.app.exceptions.constraint_violation_exception import ConstraintViolationException
-from src.app.exceptions.database_error import DataBaseError
+from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.database.db_client import DBClient
+from src.app.exceptions.db_error.database_file_not_found_error import DatabaseFileNotFoundError
 
 
 class SQLiteClient(DBClient):
     def open_connection(self) -> None:
         if self.__is_connection_open():
             return
-        self._connection = sqlite3.connect(self._config['sqlite']['database_path'])
+        try:
+            self._connection = sqlite3.connect(self._config['sqlite']['database_path'])
+        except OperationalError:
+            raise DatabaseFileNotFoundError('Файл базы данных не был найден', 500)
+        except DatabaseError:
+            raise DataBaseError('База данных недоступна', 500)
 
     def close_connection(self) -> None:
         if self.__is_connection_open():

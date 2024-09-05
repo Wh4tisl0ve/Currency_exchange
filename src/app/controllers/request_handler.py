@@ -1,5 +1,8 @@
+import json
 from urllib.parse import parse_qs, urlparse
 
+from src.app.exceptions.db_error.database_error import DataBaseError
+from src.app.exceptions.incorrect_request_error import IncorrectRequestError
 from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
 
@@ -8,14 +11,20 @@ class RequestHandler(BaseHTTPRequestHandler):
     router = Router()
 
     def do_GET(self):
-        handler, params = self.router.resolve(self.path, method='GET')
-        query_params = parse_qs(urlparse(self.path).query)
-        if query_params:
-            query_params = {k: v[0] for k, v in query_params.items()}
-            params = query_params
-            response = handler(params)
-        else:
-            response = handler(**params)
+        try:
+            handler, params = self.router.resolve(self.path, method='GET')
+            query_params = parse_qs(urlparse(self.path).query)
+
+            if query_params:
+                query_params = {k: v[0] for k, v in query_params.items()}
+                params = query_params
+                response = handler(params)
+            else:
+                response = handler(**params)
+        except DataBaseError as db_err:
+            response = json.dumps(db_err.to_dict())
+        except IncorrectRequestError as incorrect_request:
+            response = json.dumps(incorrect_request.to_dict())
         self._send_response(200, 'application/json', response)
 
     def do_POST(self):
