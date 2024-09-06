@@ -2,7 +2,7 @@ import json
 from urllib.parse import parse_qs, urlparse
 
 from src.app.exceptions.db_error.database_error import DataBaseError
-from src.app.exceptions.incorrect_request_error import IncorrectRequestError
+from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
 
@@ -23,17 +23,22 @@ class RequestHandler(BaseHTTPRequestHandler):
                 response = handler(**params)
         except DataBaseError as db_err:
             response = json.dumps(db_err.to_dict())
-        except IncorrectRequestError as incorrect_request:
-            response = json.dumps(incorrect_request.to_dict())
+        except EndpointNotFoundError as endpoint_404:
+            response = json.dumps(endpoint_404.to_dict())
+
         self._send_response(200, 'application/json', response)
 
     def do_POST(self):
         params = self.get_post_data()
+        try:
+            handler = self.router.resolve(self.path, method='POST')[0]
+            response = handler(params)
+        except DataBaseError as db_err:
+            response = json.dumps(db_err.to_dict())
+        except EndpointNotFoundError as endpoint_404:
+            response = json.dumps(endpoint_404.to_dict())
 
-        handler = self.router.resolve(self.path, method='POST')[0]
-        response = handler(params)
-
-        self._send_response(200, 'application/json', response)
+        self._send_response(201, 'application/json', response)
 
     def do_PATCH(self):
         params = self.get_post_data()
@@ -42,9 +47,12 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             handler = self.router.resolve(self.path, method='PATCH')[0]
             response = handler(params)
-            self._send_response(200, 'application/json', response)
-        except Exception:
-            self._send_response(404, 'text/html', '<h1>404 Not found</h1>')
+        except DataBaseError as db_err:
+            response = json.dumps(db_err.to_dict())
+        except EndpointNotFoundError as endpoint_404:
+            response = json.dumps(endpoint_404.to_dict())
+
+        self._send_response(200, 'application/json', response)
 
     def get_post_data(self) -> dict:
         content_length = int(self.headers['Content-Length'])

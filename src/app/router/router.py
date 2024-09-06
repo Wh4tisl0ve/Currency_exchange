@@ -1,6 +1,5 @@
 import re
-
-from src.app.exceptions.incorrect_request_error import IncorrectRequestError
+from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 
 
 class Router:
@@ -20,8 +19,4 @@ class Router:
             if match:
                 return handler, match.groupdict()
 
-        raise IncorrectRequestError('Неверный формат запроса', 400)
-
-    def not_found(self) -> str:
-        # возврат html template страницы
-        return '<h1>404 Not found</h1>'
+        raise EndpointNotFoundError('Эндпоинт не найден', 404)

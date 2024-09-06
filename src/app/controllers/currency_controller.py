@@ -3,6 +3,7 @@ from src.app.database.db_client import DBClient
 from src.app.dto.currency_dto import CurrencyDTO
 from src.app.exceptions.currency_error.currency_already_exists import CurrencyAlreadyExists
 from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
+from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.router.router import Router
 from src.app.services.currency_service import CurrencyService
 
@@ -14,7 +15,7 @@ class CurrencyController:
         self.register_routes()
 
     def register_routes(self):
-        @self.__router.route('/currencies', method='GET')
+        @self.__router.route(r'^/currencies$', method='GET')
         def get_all_currencies() -> json:
             currencies = self.__service.get_all_currencies()
             return json.dumps([currency.to_dict() for currency in currencies], indent=4)
@@ -28,13 +29,16 @@ class CurrencyController:
 
             return json.dumps(currency.to_dict(), indent=4)
 
-        @self.__router.route('/currencies', method='POST')
+        @self.__router.route(r'^/currencies$', method='POST')
         def add_currency(request: dict):
-            request_dto = CurrencyDTO(name=request.get('name'),
-                                      code=request.get('code'),
-                                      sign=request.get('sign'))
             try:
+                request_dto = CurrencyDTO(name=request['name'],
+                                          code=request['code'],
+                                          sign=request['sign'])
                 added_currency = self.__service.add_currency(request_dto)
+            except KeyError:
+                field_missing = RequiredFieldMissingError('Отсутствует нужное поле формы', 400)
+                return json.dumps(field_missing.to_dict(), indent=4)
             except CurrencyAlreadyExists as currency_exists:
                 return json.dumps(currency_exists.to_dict(), indent=4)
 

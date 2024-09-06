@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 
 @dataclass(frozen=True)
@@ -9,9 +9,4 @@ class CurrencyDTO:
     sign: str = ''
 
     def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "name": self.name,
-            "code": self.code,
-            "sign": self.sign
-        }
+        return asdict(self)

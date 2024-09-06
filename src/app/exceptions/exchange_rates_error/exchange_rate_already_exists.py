@@ -1,5 +1,5 @@
 from src.app.exceptions.constraint_violation_exception import ConstraintViolationException
 
 
-class CurrencyAlreadyExists(ConstraintViolationException):
+class ExchangeRateAlreadyExists(ConstraintViolationException):
     pass
