@@ -1,7 +1,6 @@
+from src.app.exceptions.not_found_error import NotFoundError
 from src.app.database.db_client import DBClient
 from abc import abstractmethod, ABC
-
-from src.app.exceptions.not_found_error import NotFoundError
 
 
 class BaseDAO(ABC):
@@ -17,8 +16,8 @@ class BaseDAO(ABC):
 
         return entities
 
-    def _get_concrete_entity(self, name_entity: str, field_find: str) -> tuple:
-        query = f"SELECT * FROM {self._name_entity} WHERE {field_find} LIKE '{name_entity}'"
+    def _get_concrete_entity(self, value_find: str, field_find: str) -> tuple:
+        query = f"SELECT * FROM {self._name_entity} WHERE {field_find} LIKE '{value_find}'"
 
         self._client_db.open_connection()
         try:

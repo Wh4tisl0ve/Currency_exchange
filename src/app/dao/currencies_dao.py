@@ -22,15 +22,15 @@ class CurrenciesDAO(BaseDAO):
             cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
         except NotFoundError:
             raise CurrencyNotFoundError(f'Код {currency_code} не соответствует ни одной валюте', 404)
+
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
     def add(self, currency: Currency) -> Currency:
-        query = f'''INSERT INTO Currencies (Code, FullName, Sign) 
-                    VALUES ('{currency.code}','{currency.name}','{currency.sign}')'''
+        query = "INSERT INTO Currencies (Code, FullName, Sign) VALUES (?,?,?)"
 
         self._client_db.open_connection()
         try:
-            self._client_db.execute_ddl(query)
+            self._client_db.execute_ddl(query, (currency.code, currency.name, currency.sign))
         except ConstraintViolationException:
             raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует', 409)
         self._client_db.close_connection()
