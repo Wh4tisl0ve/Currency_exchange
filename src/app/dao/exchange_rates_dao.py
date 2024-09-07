@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from src.app.dao.base_dao import BaseDAO
 from src.app.entities.exchange_rate import ExchangeRate
 from src.app.database.db_client import DBClient
@@ -35,7 +37,7 @@ class ExchangeRatesDAO(BaseDAO):
             raise ExchangeRateNotFoundError('Обменный курс для пары не найден', 404)
         self._client_db.close_connection()
 
-        return ExchangeRate(id=er_id, base_currency_id=er_base, target_currency_id=er_target, rate=er_rate)
+        return ExchangeRate(id=er_id, base_currency_id=er_base, target_currency_id=er_target, rate=Decimal(er_rate))
 
     def add(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         query = f'''INSERT INTO {self._name_entity} (BaseCurrencyId, TargetCurrencyId, Rate) 

@@ -15,6 +15,6 @@ class ExchangerResponse:
     def to_dict(self):
         return {"baseCurrency": self.base_currency.to_dict(),
                 "targetCurrency": self.target_currency.to_dict(),
-                "rate": self.rate,
+                "rate": float(self.rate),
                 "amount": float(self.amount),
                 "convertedAmount": float(self.converted_amount)}

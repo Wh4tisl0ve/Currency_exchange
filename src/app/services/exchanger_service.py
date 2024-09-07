@@ -50,19 +50,19 @@ class ExchangerService:
                                      exchanger_request.amount,
                                      converted_amount.quantize(Decimal('0.00001')))
         except ExchangeRateNotFoundError:
-            self.__calc_amount_via_usd(exchanger_request)
+            return self.__calc_amount_via_usd(exchanger_request)
 
     def __calc_amount_via_usd(self, exchanger_request: ExchangerRequest):
         try:
             usd_currency = self.__currencies_dao.get_currency_by_code('USD')
 
-            direct_exchange_rate_entity = self.__get_exchange_rate(exchanger_request.base_currency.id, usd_currency.id)
-            reverse_exchange_rate_entity = self.__get_exchange_rate(exchanger_request.target_currency.id, usd_currency.id)
+            direct_exchange_rate_entity = self.__get_exchange_rate(usd_currency.id, exchanger_request.base_currency.id)
+            reverse_exchange_rate_entity = self.__get_exchange_rate(usd_currency.id, exchanger_request.target_currency.id)
 
             base_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(direct_exchange_rate_entity)
             target_usd_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(reverse_exchange_rate_entity)
 
-            converted_amount = (exchanger_request.amount * base_usd_exchange_rate.rate) * target_usd_exchange_rate.rate
+            converted_amount = exchanger_request.amount * base_usd_exchange_rate.rate * target_usd_exchange_rate.rate
             rate = converted_amount / exchanger_request.amount
 
             return ExchangerResponse(exchanger_request.base_currency,
@@ -71,7 +71,7 @@ class ExchangerService:
                                      exchanger_request.amount,
                                      converted_amount.quantize(Decimal('0.00001')))
         except ExchangeRateNotFoundError:
-            raise NotFoundError('Не найдено', 404)
+            raise NotFoundError('Не найден обменный курс для валютной пары', 404)
 
     def __get_exchange_rate(self, base_currency_id: int, target_currency_id: int) -> ExchangeRate:
         exchange_rate_entity = ExchangeRate(id=0,
