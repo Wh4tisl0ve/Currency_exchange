@@ -12,7 +12,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            handler, params = self.router.resolve(self.path, method='GET')
+            handler, params = self.router.resolve(urlparse(self.path).path, method='GET')
             query_params = parse_qs(urlparse(self.path).query)
 
             if query_params:

@@ -15,5 +15,5 @@ class ExchangeRatesDTO:
         return {"id": self.id,
                 "baseCurrency": self.base_currency.to_dict(),
                 "targetCurrency": self.target_currency.to_dict(),
-                "rate": self.rate
+                "rate": float(self.rate)
                 }

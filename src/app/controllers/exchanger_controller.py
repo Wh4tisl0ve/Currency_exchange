@@ -5,6 +5,7 @@ from src.app.database.db_client import DBClient
 from src.app.dto.request.exchanger_request import ExchangerRequest
 from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
+from src.app.exceptions.exchanger.currency_identy_error import CurrencyIdentityError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.router.router import Router
@@ -20,7 +21,7 @@ class ExchangerController:
         self.register_routes()
 
     def register_routes(self):
-        @self.__router.route('/exchange', method='GET')
+        @self.__router.route(r'^/exchange$', method='GET')
         def get_all_exchange_rates(request: dict) -> json:
             try:
                 base_currency = self.__currency_service.get_concrete_currency(request['from'])
@@ -38,5 +39,7 @@ class ExchangerController:
                 return json.dumps(exchange_rate_not_found.to_dict(), indent=4)
             except NotFoundError as not_found:
                 return json.dumps(not_found.to_dict(), indent=4)
+            except CurrencyIdentityError as currency_identity:
+                return json.dumps(currency_identity.to_dict(), indent=4)
 
             return json.dumps(exchanger_response.to_dict(), indent=4)
