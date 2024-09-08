@@ -1,5 +1,5 @@
-from src.app.dto.currency_dto import CurrencyDTO
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
+from src.app.dto.currency_dto import CurrencyDTO
 from src.app.entities.exchange_rate import ExchangeRate
 from src.app.mappers.mapper import Mapper
 
