@@ -1,11 +1,12 @@
-import json
+from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
+from src.app.exceptions.currency_error.currency_already_exists_error import CurrencyAlreadyExists
+from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
+from src.app.exceptions.no_content_error import NoContentError
+from src.app.services.currency_service import CurrencyService
 from src.app.database.db_client import DBClient
 from src.app.dto.currency_dto import CurrencyDTO
-from src.app.exceptions.currency_error.currency_already_exists import CurrencyAlreadyExists
-from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
-from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.router.router import Router
-from src.app.services.currency_service import CurrencyService
+import json
 
 
 class CurrencyController:
@@ -17,7 +18,11 @@ class CurrencyController:
     def register_routes(self):
         @self.__router.route(r'^/currencies$', method='GET')
         def get_all_currencies() -> json:
-            currencies = self.__service.get_all_currencies()
+            try:
+                currencies = self.__service.get_all_currencies()
+            except NoContentError as no_content:
+                return json.dumps(no_content.to_dict(), indent=4)
+
             return json.dumps([currency.to_dict() for currency in currencies], indent=4)
 
         @self.__router.route(r'^/currency/(?P<currency_code>[a-zA-Z]{3})$', method='GET')

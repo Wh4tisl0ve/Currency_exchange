@@ -1,16 +1,15 @@
-import json
-from decimal import Decimal
-
-from src.app.database.db_client import DBClient
-from src.app.dto.request.exchanger_request import ExchangerRequest
-from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
+from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.exchanger.currency_identy_error import CurrencyIdentityError
-from src.app.exceptions.not_found_error import NotFoundError
 from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
-from src.app.router.router import Router
+from src.app.exceptions.not_found_error import NotFoundError
 from src.app.services.currency_service import CurrencyService
 from src.app.services.exchanger_service import ExchangerService
+from src.app.dto.request.exchanger_request import ExchangerRequest
+from src.app.database.db_client import DBClient
+from src.app.router.router import Router
+from decimal import Decimal
+import json
 
 
 class ExchangerController:
@@ -33,13 +32,10 @@ class ExchangerController:
             except KeyError:
                 field_missing = RequiredFieldMissingError('Отсутствует нужный параметр', 400)
                 return json.dumps(field_missing.to_dict(), indent=4)
-            except CurrencyNotFoundError as currency_not_found:
-                return json.dumps(currency_not_found.to_dict(), indent=4)
-            except ExchangeRateNotFoundError as exchange_rate_not_found:
-                return json.dumps(exchange_rate_not_found.to_dict(), indent=4)
-            except NotFoundError as not_found:
-                return json.dumps(not_found.to_dict(), indent=4)
-            except CurrencyIdentityError as currency_identity:
-                return json.dumps(currency_identity.to_dict(), indent=4)
+            except (CurrencyNotFoundError,
+                    ExchangeRateNotFoundError,
+                    NotFoundError,
+                    CurrencyIdentityError) as e:
+                return json.dumps(e.to_dict(), indent=4)
 
             return json.dumps(exchanger_response.to_dict(), indent=4)
