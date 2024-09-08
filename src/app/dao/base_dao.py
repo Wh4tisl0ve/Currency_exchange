@@ -1,7 +1,7 @@
 from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.no_content_error import NoContentError
 from src.app.exceptions.not_found_error import NotFoundError
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 from sqlite3 import OperationalError
 from abc import abstractmethod, ABC
 

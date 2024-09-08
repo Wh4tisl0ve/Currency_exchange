@@ -5,7 +5,7 @@ from src.app.dto.response.exchanger_response import ExchangerResponse
 from src.app.dto.request.exchanger_request import ExchangerRequest
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
 from src.app.dao.currencies_dao import CurrenciesDAO
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 from src.app.entities.exchange_rate import ExchangeRate
 from decimal import Decimal
 

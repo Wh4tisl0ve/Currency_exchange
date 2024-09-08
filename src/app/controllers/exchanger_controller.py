@@ -1,13 +1,13 @@
 from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
 from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
+from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.exceptions.exchanger.currency_identy_error import CurrencyIdentityError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
-from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.services.currency_service import CurrencyService
 from src.app.services.exchanger_service import ExchangerService
 from src.app.dto.request.exchanger_request import ExchangerRequest
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 from src.app.router.router import Router
 from decimal import Decimal, InvalidOperation
 

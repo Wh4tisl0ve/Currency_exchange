@@ -1,7 +1,7 @@
 from src.app.mappers.currency_mapper import CurrencyMapper
 from src.app.dao.currencies_dao import CurrenciesDAO
 from src.app.dto.currency_dto import CurrencyDTO
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 
 
 class CurrencyService:

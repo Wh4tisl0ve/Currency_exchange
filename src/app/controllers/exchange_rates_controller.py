@@ -7,7 +7,7 @@ from src.app.exceptions.no_content_error import NoContentError
 from src.app.services.currency_service import CurrencyService
 from src.app.services.exchange_rates_service import ExchangeRatesService
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 from src.app.router.router import Router
 from decimal import Decimal, InvalidOperation
 

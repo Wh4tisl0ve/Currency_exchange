@@ -1,7 +1,7 @@
 from src.app.mappers.exchange_rates_mapper import ExchangeRatesMapper
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
 from src.app.dao.exchange_rates_dao import ExchangeRatesDAO
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 
 
 class ExchangeRatesService:

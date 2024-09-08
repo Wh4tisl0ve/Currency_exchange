@@ -1,11 +1,11 @@
+from src.app.exceptions.currency_error.currency_already_exists_error import CurrencyAlreadyExists
 from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
-from src.app.exceptions.currency_error.currency_already_exists_error import CurrencyAlreadyExists
+from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.not_found_error import NotFoundError
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 from src.app.entities.currency import Currency
 from src.app.dao.base_dao import BaseDAO
-from src.app.exceptions.validation_error import ValidationError
 
 
 class CurrenciesDAO(BaseDAO):

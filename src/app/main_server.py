@@ -5,12 +5,12 @@ from src.app.controllers.currency_controller import CurrencyController
 from src.app.controllers.exchange_rates_controller import ExchangeRatesController
 from src.app.controllers.exchanger_controller import ExchangerController
 from src.app.controllers.request_handler import RequestHandler
-from src.app.database.sqlite_client import SQLiteClient
+from src.app.db_clients.sqlite_client import SQLiteClient
 
 
 current_file_path = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file_path)
-with open(os.path.join(current_dir, 'database', 'config', 'config.json'), 'r', encoding='utf-8') as f:
+with open(os.path.join(current_dir, 'db_clients', 'config', 'config.json'), 'r', encoding='utf-8') as f:
     config = json.load(f)
 
 db_client = SQLiteClient(config)

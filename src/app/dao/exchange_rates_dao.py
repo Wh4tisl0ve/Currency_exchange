@@ -1,8 +1,8 @@
-from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
 from src.app.exceptions.exchange_rates_error.exchange_rate_already_exists_error import ExchangeRateAlreadyExistsError
+from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.entities.exchange_rate import ExchangeRate
-from src.app.database.db_client import DBClient
+from src.app.db_clients.db_client import DBClient
 from src.app.dao.base_dao import BaseDAO
 from decimal import Decimal
 
