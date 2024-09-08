@@ -1,10 +1,10 @@
-from src.app.dao.base_dao import BaseDAO
-from src.app.entities.currency import Currency
-from src.app.database.db_client import DBClient
+from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.constraint_violation_exception import ConstraintViolationException
 from src.app.exceptions.currency_error.currency_already_exists import CurrencyAlreadyExists
-from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.not_found_error import NotFoundError
+from src.app.database.db_client import DBClient
+from src.app.entities.currency import Currency
+from src.app.dao.base_dao import BaseDAO
 
 
 class CurrenciesDAO(BaseDAO):
@@ -21,7 +21,7 @@ class CurrenciesDAO(BaseDAO):
         try:
             cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
         except NotFoundError:
-            raise CurrencyNotFoundError(f'Код {currency_code} не соответствует ни одной валюте', 404)
+            raise CurrencyNotFoundError(f'Код {currency_code} не соответствует ни одной валюте')
 
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
@@ -32,7 +32,7 @@ class CurrenciesDAO(BaseDAO):
         try:
             self._client_db.execute_ddl(query, (currency.code, currency.name, currency.sign))
         except ConstraintViolationException:
-            raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует', 409)
+            raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует')
         self._client_db.close_connection()
 
         return self.get_currency_by_code(currency.code)
