@@ -4,5 +4,5 @@ class UserError(Exception):
         self.__code = code
 
     def to_dict(self) -> dict:
-        return {"message": self.args[0],
+        return {"body": {'message': self.args[0]},
                 "code": self.__code}

@@ -44,8 +44,8 @@ class ExchangerService:
                                                              exchanger_request.base_currency.id)
             reverse_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(reverse_exchange_rate_entity)
 
-            converted_amount = exchanger_request.amount / reverse_exchange_rate.rate
-            rate = reverse_exchange_rate.rate
+            rate = 1 / reverse_exchange_rate.rate
+            converted_amount = exchanger_request.amount * rate
 
             return ExchangerResponse(exchanger_request.base_currency,
                                      exchanger_request.target_currency,
@@ -74,7 +74,7 @@ class ExchangerService:
                                      exchanger_request.amount,
                                      converted_amount.quantize(Decimal('0.0001')))
         except ExchangeRateNotFoundError:
-            raise NotFoundError('Не найден обменный курс для валютной пары', 404)
+            raise NotFoundError('Не найден обменный курс для валютной пары')
 
     def __get_entity(self, base_currency_id: int, target_currency_id: int) -> ExchangeRate:
         exchange_rate_entity = ExchangeRate(id=0,

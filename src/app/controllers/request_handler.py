@@ -21,9 +21,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             else:
                 response = handler(**params)
         except (DataBaseError, EndpointNotFoundError) as e:
-            response = json.dumps(e.to_dict())
+            response = e.to_dict()
 
-        self._send_response(200, 'application/json', response)
+        self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
     def do_POST(self) -> None:
         params = self.get_params()
@@ -31,9 +31,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             handler = self.router.resolve(self.path, method='POST')[0]
             response = handler(params)
         except (DataBaseError, EndpointNotFoundError) as e:
-            response = json.dumps(e.to_dict())
+            response = e.to_dict()
 
-        self._send_response(201, 'application/json', response)
+        self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
     def do_PATCH(self) -> None:
         params = self.get_params()
@@ -43,9 +43,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             handler = self.router.resolve(self.path, method='PATCH')[0]
             response = handler(params)
         except (DataBaseError, EndpointNotFoundError) as e:
-            response = json.dumps(e.to_dict())
+            response = e.to_dict()
 
-        self._send_response(200, 'application/json', response)
+        self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
     def get_params(self) -> dict:
         content_length = int(self.headers['Content-Length'])
