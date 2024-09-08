@@ -11,7 +11,8 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS Currencies
                  Sign TEXT 
                 CHECK(
                         typeof("Code") = "text" AND
-                        length("Code") == 3
+                        length("Code") == 3 AND
+                        "Code" == UPPER("CODE")
                 ))''')
 cursor.execute('''CREATE TABLE IF NOT EXISTS ExchangeRates (
                    ID INTEGER PRIMARY KEY AUTOINCREMENT, 
