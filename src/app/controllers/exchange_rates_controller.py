@@ -8,16 +8,15 @@ from src.app.exceptions.no_content_error import NoContentError
 from src.app.services.currency_service import CurrencyService
 from src.app.services.exchange_rates_service import ExchangeRatesService
 from src.app.dto.exchange_rates_dto import ExchangeRatesDTO
-from src.app.db_clients.db_client import DBClient
-from src.app.router.router import Router
+from src.app.router import Router
 from decimal import Decimal, InvalidOperation
 
 
 class ExchangeRatesController:
-    def __init__(self, db_client: DBClient, router: Router):
-        self.__exchange_rates_service = ExchangeRatesService(db_client)
-        self.__currency_service = CurrencyService(db_client)
-        self.__router = router
+    def __init__(self):
+        self.__exchange_rates_service = ExchangeRatesService()
+        self.__currency_service = CurrencyService()
+        self.__router = Router()
         self.register_routes()
 
     def register_routes(self):

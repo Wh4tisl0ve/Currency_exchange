@@ -3,14 +3,13 @@ from src.app.exceptions.currency_error.currency_not_found_error import CurrencyN
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.not_found_error import NotFoundError
-from src.app.db_clients.db_client import DBClient
 from src.app.entities.currency import Currency
 from src.app.dao.base_dao import BaseDAO
 
 
 class CurrenciesDAO(BaseDAO):
-    def __init__(self, db_client: DBClient):
-        super().__init__(db_client, 'Currencies')
+    def __init__(self):
+        super().__init__('Currencies')
 
     def get_all_currencies(self) -> list[Currency]:
         currencies = self._get_all_entities()
@@ -34,9 +33,8 @@ class CurrenciesDAO(BaseDAO):
             self._client_db.execute_ddl(query, (currency.code, currency.name, currency.sign))
         except ConstraintViolationException as e:
             if 'check' in e.args[0].lower():
-                raise ValidationError('Код валюты должен состоять из 3 латинских букв верхним регистром', 400)
+                raise ValidationError('Код валюты должен состоять из 3 латинских букв в верхнем регистре', 400)
             else:
                 raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует')
-        self._client_db.close_connection()
 
         return self.get_currency_by_code(currency.code)

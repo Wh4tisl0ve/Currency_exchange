@@ -12,7 +12,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS Currencies
                 CHECK(
                         typeof("Code") = "text" AND
                         length("Code") == 3 AND
-                        "Code" == UPPER("CODE")
+                        "Code" GLOB '*[A-Z]*'
                 ))''')
 cursor.execute('''CREATE TABLE IF NOT EXISTS ExchangeRates (
                    ID INTEGER PRIMARY KEY AUTOINCREMENT, 

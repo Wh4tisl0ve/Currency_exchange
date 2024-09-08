@@ -4,15 +4,14 @@ from src.app.exceptions.required_field_missing_error import RequiredFieldMissing
 from src.app.exceptions.no_content_error import NoContentError
 from src.app.exceptions.validation_error import ValidationError
 from src.app.services.currency_service import CurrencyService
-from src.app.db_clients.db_client import DBClient
 from src.app.dto.currency_dto import CurrencyDTO
-from src.app.router.router import Router
+from src.app.router import Router
 
 
 class CurrencyController:
-    def __init__(self, db_client: DBClient, router: Router):
-        self.__service = CurrencyService(db_client)
-        self.__router = router
+    def __init__(self):
+        self.__service = CurrencyService()
+        self.__router = Router()
         self.register_routes()
 
     def register_routes(self):

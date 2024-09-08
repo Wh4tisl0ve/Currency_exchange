@@ -5,8 +5,8 @@ from src.app.db_clients.db_client import DBClient
 
 
 class CurrencyService:
-    def __init__(self, db_client: DBClient):
-        self.__currencies_dao = CurrenciesDAO(db_client)
+    def __init__(self):
+        self.__currencies_dao = CurrenciesDAO()
         self.__currency_mapper = CurrencyMapper()
 
     def get_all_currencies(self) -> list[CurrencyDTO]:

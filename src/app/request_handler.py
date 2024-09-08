@@ -1,6 +1,6 @@
 from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 from src.app.exceptions.db_error.database_error import DataBaseError
-from src.app.router.router import Router
+from src.app.router import Router
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 from sqlite3 import OperationalError

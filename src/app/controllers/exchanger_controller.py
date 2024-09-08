@@ -7,16 +7,15 @@ from src.app.exceptions.not_found_error import NotFoundError
 from src.app.services.currency_service import CurrencyService
 from src.app.services.exchanger_service import ExchangerService
 from src.app.dto.request.exchanger_request import ExchangerRequest
-from src.app.db_clients.db_client import DBClient
-from src.app.router.router import Router
+from src.app.router import Router
 from decimal import Decimal, InvalidOperation
 
 
 class ExchangerController:
-    def __init__(self, db_client: DBClient, router: Router):
-        self.__exchanger_service = ExchangerService(db_client)
-        self.__currency_service = CurrencyService(db_client)
-        self.__router = router
+    def __init__(self):
+        self.__exchanger_service = ExchangerService()
+        self.__currency_service = CurrencyService()
+        self.__router = Router()
         self.register_routes()
 
     def register_routes(self):

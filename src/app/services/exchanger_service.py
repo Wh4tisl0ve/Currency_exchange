@@ -11,9 +11,9 @@ from decimal import Decimal
 
 
 class ExchangerService:
-    def __init__(self, db_client: DBClient):
-        self.__exchange_rates_dao = ExchangeRatesDAO(db_client)
-        self.__currencies_dao = CurrenciesDAO(db_client)
+    def __init__(self):
+        self.__exchange_rates_dao = ExchangeRatesDAO()
+        self.__currencies_dao = CurrenciesDAO()
 
     def perform_currency_exchange(self, exchanger_request: ExchangerRequest) -> ExchangerResponse:
         if exchanger_request.base_currency.id == exchanger_request.target_currency.id:
@@ -43,8 +43,7 @@ class ExchangerService:
             reverse_exchange_rate_entity = self.__get_entity(exchanger_request.target_currency.id,
                                                              exchanger_request.base_currency.id)
             reverse_exchange_rate = self.__exchange_rates_dao.get_exchange_rate(reverse_exchange_rate_entity)
-
-            rate = 1 / reverse_exchange_rate.rate
+            rate = Decimal(1) / reverse_exchange_rate.rate
             converted_amount = exchanger_request.amount * rate
 
             return ExchangerResponse(exchanger_request.base_currency,

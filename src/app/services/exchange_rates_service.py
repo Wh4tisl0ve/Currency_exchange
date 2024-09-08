@@ -5,8 +5,8 @@ from src.app.db_clients.db_client import DBClient
 
 
 class ExchangeRatesService:
-    def __init__(self, db_client: DBClient):
-        self.__exchange_rates_dao = ExchangeRatesDAO(db_client)
+    def __init__(self):
+        self.__exchange_rates_dao = ExchangeRatesDAO()
         self.__exchange_rate_mapper = ExchangeRatesMapper()
 
     def get_all_exchange_rates(self) -> list[ExchangeRatesDTO]:

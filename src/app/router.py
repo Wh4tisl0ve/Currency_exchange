@@ -1,14 +1,15 @@
+from src.app.db_clients.singleton import Singleton
 from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 from typing import Callable
 import re
 
 
-class Router:
+class Router(metaclass=Singleton):
     def __init__(self):
         self.routes = {'GET': {}, 'POST': {}, 'PATCH': {}}
 
     def route(self, path: str, method: str = 'GET') -> Callable:
-        def register_routes(handler) -> Callable:
+        def register_routes(handler: Callable) -> Callable:
             self.routes[method][re.compile(path)] = handler
             return handler
 

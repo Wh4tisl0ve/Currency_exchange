@@ -1,3 +1,4 @@
+from src.app.db_clients.config.config import load_config
 from src.app.exceptions.db_error.database_file_not_found_error import DatabaseFileNotFoundError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.exceptions.db_error.database_error import DataBaseError
@@ -7,39 +8,38 @@ import sqlite3
 
 
 class SQLiteClient(DBClient):
+    def __init__(self):
+        super().__init__()
+        self.__config = load_config()
+
     def open_connection(self) -> None:
         if self.__is_connection_open():
             return
         try:
-            self._connection = sqlite3.connect(self._config['sqlite']['database_path'])
+            self.client = sqlite3.connect(self.__config['sqlite']['database_path'])
         except OperationalError:
             raise DatabaseFileNotFoundError('Файл базы данных не был найден')
         except DatabaseError:
             raise DataBaseError('База данных недоступна')
 
-    def close_connection(self) -> None:
-        if self.__is_connection_open():
-            self._connection.close()
-            self._connection = None
-        else:
-            raise DataBaseError('Подключение к БД было закрыто')
-
     def __is_connection_open(self) -> bool:
-        return self._connection is not None
+        return self.client is not None
 
     def _execute_query(self, query: str, parameters: tuple = ()) -> list[tuple]:
-        cursor = self._connection.cursor()
+        cursor = self.client.cursor()
         try:
             cursor.execute(query, parameters)
+            data = cursor.fetchall()
+            cursor.close()
         except IntegrityError as e:
             raise ConstraintViolationException(e.args[0])
 
-        return cursor.fetchall()
+        return data
 
     def execute_ddl(self, query: str, parameters: tuple = ()) -> None:
         if self.__is_connection_open():
             self._execute_query(query, parameters)
-            self._connection.commit()
+            self.client.commit()
         else:
             raise DataBaseError('Подключение к БД было закрыто')
 
