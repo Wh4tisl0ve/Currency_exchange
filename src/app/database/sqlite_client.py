@@ -31,8 +31,8 @@ class SQLiteClient(DBClient):
         cursor = self._connection.cursor()
         try:
             cursor.execute(query, parameters)
-        except IntegrityError:
-            raise ConstraintViolationException('Нарушение ссылочной целостности')
+        except IntegrityError as e:
+            raise ConstraintViolationException(e.args[0])
 
         return cursor.fetchall()
 

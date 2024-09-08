@@ -2,6 +2,7 @@ from src.app.exceptions.currency_error.currency_not_found_error import CurrencyN
 from src.app.exceptions.currency_error.currency_already_exists_error import CurrencyAlreadyExists
 from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.exceptions.no_content_error import NoContentError
+from src.app.exceptions.validation_error import ValidationError
 from src.app.services.currency_service import CurrencyService
 from src.app.database.db_client import DBClient
 from src.app.dto.currency_dto import CurrencyDTO
@@ -45,5 +46,7 @@ class CurrencyController:
                 return field_missing.to_dict()
             except CurrencyAlreadyExists as currency_exists:
                 return currency_exists.to_dict()
+            except ValidationError as validation_error:
+                return validation_error.to_dict()
 
             return {"code": 201, "body": added_currency.to_dict()}
