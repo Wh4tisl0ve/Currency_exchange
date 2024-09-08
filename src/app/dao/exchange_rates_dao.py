@@ -43,7 +43,7 @@ class ExchangeRatesDAO(BaseDAO):
         try:
             self._client_db.execute_ddl(query, (exchange_rate.base_currency_id,
                                                 exchange_rate.target_currency_id,
-                                                exchange_rate.rate))
+                                                float(exchange_rate.rate)))
         except ConstraintViolationException:
             raise ExchangeRateAlreadyExistsError('Валютная пара с таким кодом уже существует')
         self._client_db.close_connection()
@@ -54,7 +54,7 @@ class ExchangeRatesDAO(BaseDAO):
         query = f'UPDATE {self._name_entity} SET Rate = ? WHERE BaseCurrencyId = ? AND TargetCurrencyId = ?'
 
         self._client_db.open_connection()
-        self._client_db.execute_ddl(query, (exchange_rate.rate,
+        self._client_db.execute_ddl(query, (float(exchange_rate.rate),
                                             exchange_rate.base_currency_id,
                                             exchange_rate.target_currency_id))
         self._client_db.close_connection()

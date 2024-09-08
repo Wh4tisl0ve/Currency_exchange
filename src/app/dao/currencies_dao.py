@@ -13,13 +13,13 @@ class CurrenciesDAO(BaseDAO):
 
     def get_all_currencies(self) -> list[Currency]:
         currencies = self._get_all_entities()
-        currencies_entity = [Currency(id=cur[0], name=cur[1], code=cur[2], sign=cur[3]) for cur in currencies]
+        currencies_entity = [Currency(id=cur[0], code=cur[1], name=cur[2], sign=cur[3]) for cur in currencies]
 
         return currencies_entity
 
     def get_currency_by_code(self, currency_code: str = '') -> Currency:
         try:
-            cur_id, cur_name, cur_code, cur_sign = self._get_concrete_entity(currency_code, 'Code')
+            cur_id, cur_code, cur_name, cur_sign = self._get_concrete_entity(currency_code, 'Code')
         except NotFoundError:
             raise CurrencyNotFoundError(f'Код {currency_code} не соответствует ни одной валюте')
 
