@@ -4,7 +4,15 @@ conn = sqlite3.connect('../resources/currency_exchange.db')
 cursor = conn.cursor()
 
 # Создание таблиц
-cursor.execute('CREATE TABLE IF NOT EXISTS Currencies (ID INTEGER PRIMARY KEY AUTOINCREMENT, Code TEXT UNIQUE, FullName TEXT, Sign TEXT)')
+cursor.execute('''CREATE TABLE IF NOT EXISTS Currencies 
+                 (ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+                 Code TEXT UNIQUE, 
+                 FullName TEXT, 
+                 Sign TEXT 
+                CHECK(
+                        typeof("Code") = "text" AND
+                        length("Code") == 3
+                ))''')
 cursor.execute('''CREATE TABLE IF NOT EXISTS ExchangeRates (
                    ID INTEGER PRIMARY KEY AUTOINCREMENT, 
                    BaseCurrencyId INTEGER, 
