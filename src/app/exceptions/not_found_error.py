@@ -1,8 +1,7 @@
-class NotFoundError(Exception):
-    def __init__(self, message: str, code: int):
-        super().__init__(message)
-        self.__code = code
+from src.app.exceptions.user_error import UserError
 
-    def to_dict(self) -> dict:
-        return {"message": self.args[0],
-                "code": self.__code}
+
+class NotFoundError(UserError):
+    def __init__(self, message: str):
+        super().__init__(message, 404)
+
