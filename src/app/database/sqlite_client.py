@@ -1,5 +1,5 @@
 from src.app.exceptions.db_error.database_file_not_found_error import DatabaseFileNotFoundError
-from src.app.exceptions.constraint_violation_exception import ConstraintViolationException
+from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.database.db_client import DBClient
 from sqlite3 import IntegrityError, OperationalError, DatabaseError

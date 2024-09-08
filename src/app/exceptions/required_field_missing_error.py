@@ -1,8 +1,5 @@
-class RequiredFieldMissingError(Exception):
-    def __init__(self, message: str, code: int):
-        super().__init__(message)
-        self.__code = code
+from src.app.exceptions.user_error import UserError
 
-    def to_dict(self) -> dict:
-        return {"message": self.args[0],
-                "code": self.__code}
+
+class RequiredFieldMissingError(UserError):
+    pass
