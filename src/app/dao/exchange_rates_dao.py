@@ -1,5 +1,6 @@
 from src.app.exceptions.exchange_rates_error.exchange_rate_already_exists_error import ExchangeRateAlreadyExistsError
 from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
+from src.app.exceptions.exchange_rates_error.invalid_currency_pair_error import InvalidCurrencyPairError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.entities.exchange_rate import ExchangeRate
 from src.app.db_clients.db_client import DBClient
@@ -44,8 +45,11 @@ class ExchangeRatesDAO(BaseDAO):
             self._client_db.execute_ddl(query, (exchange_rate.base_currency_id,
                                                 exchange_rate.target_currency_id,
                                                 float(exchange_rate.rate)))
-        except ConstraintViolationException:
-            raise ExchangeRateAlreadyExistsError('Валютная пара с таким кодом уже существует')
+        except ConstraintViolationException as e:
+            if 'check' in e.args[0].lower():
+                raise InvalidCurrencyPairError('Невозможно добавить курс с одинаковым базовым и целевым кодом валюты')
+            else:
+                raise ExchangeRateAlreadyExistsError('Валютная пара с таким кодом уже существует')
         self._client_db.close_connection()
 
         return self.get_exchange_rate(exchange_rate)

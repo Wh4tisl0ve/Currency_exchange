@@ -1,8 +1,9 @@
 from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 from src.app.exceptions.db_error.database_error import DataBaseError
+from src.app.router.router import Router
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
-from src.app.router.router import Router
+from sqlite3 import OperationalError
 import json
 
 
@@ -22,6 +23,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 response = handler(**params)
         except (DataBaseError, EndpointNotFoundError) as e:
             response = e.to_dict()
+        except OperationalError:
+            response = DataBaseError('Нет доступа к базе данных').to_dict()
 
         self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
@@ -32,6 +35,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             response = handler(params)
         except (DataBaseError, EndpointNotFoundError) as e:
             response = e.to_dict()
+        except OperationalError:
+            response = DataBaseError('Нет доступа к базе данных').to_dict()
 
         self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
@@ -43,6 +48,9 @@ class RequestHandler(BaseHTTPRequestHandler):
             handler = self.router.resolve(self.path, method='PATCH')[0]
             response = handler(params)
         except (DataBaseError, EndpointNotFoundError) as e:
+            response = e.to_dict()
+        except OperationalError:
+            e = DataBaseError('Нет доступа к базе данных')
             response = e.to_dict()
 
         self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))

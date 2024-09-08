@@ -21,7 +21,10 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS ExchangeRates (
                    Rate DECIMAL(6,2), 
                    FOREIGN KEY(BaseCurrencyId) REFERENCES Currencies(ID),
                    FOREIGN KEY(TargetCurrencyId) REFERENCES Currencies(ID),
-                   UNIQUE(BaseCurrencyId, TargetCurrencyId)
+                   UNIQUE(BaseCurrencyId, TargetCurrencyId),
+                   CHECK(
+                        BaseCurrencyId != TargetCurrencyId
+                )
                  )''')
 
 # Вставка данных в таблицу

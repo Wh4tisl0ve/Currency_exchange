@@ -1,6 +1,7 @@
 from src.app.exceptions.exchange_rates_error.exchange_rate_already_exists_error import ExchangeRateAlreadyExistsError
 from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
 from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
+from src.app.exceptions.exchange_rates_error.invalid_currency_pair_error import InvalidCurrencyPairError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
 from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.exceptions.no_content_error import NoContentError
@@ -64,7 +65,7 @@ class ExchangeRatesController:
             except KeyError:
                 field_missing = RequiredFieldMissingError('Отсутствует нужное поле формы', 400)
                 return field_missing.to_dict()
-            except (CurrencyNotFoundError, ExchangeRateAlreadyExistsError) as e:
+            except (CurrencyNotFoundError, ExchangeRateAlreadyExistsError, InvalidCurrencyPairError) as e:
                 return e.to_dict()
 
             result_exchange_rate = ExchangeRatesDTO(id=added_exchange_rate.id,
@@ -85,14 +86,14 @@ class ExchangeRatesController:
                                                target_currency=target_currency,
                                                rate=Decimal(str(request['rate']).replace(',', '.')))
                 updated_exchange_rate = self.__exchange_rates_service.update_exchange_rate(request_dto)
+            except (CurrencyNotFoundError, ExchangeRateNotFoundError) as e:
+                return e.to_dict()
             except InvalidOperation:
                 field_invalid = InvalidFieldError('Запрос содержит некорректные данные')
                 return field_invalid.to_dict()
             except KeyError:
                 field_missing = RequiredFieldMissingError('Отсутствует нужное поле формы', 400)
                 return field_missing.to_dict()
-            except (CurrencyNotFoundError, ExchangeRateNotFoundError) as e:
-                return e.to_dict()
 
             result_exchange_rate = ExchangeRatesDTO(id=updated_exchange_rate.id,
                                                     base_currency=base_currency,
