@@ -18,10 +18,10 @@ class BaseDAO(ABC):
         return entities
 
     def _find_concrete_entity(self, value_find: str, field_find: str) -> tuple:
-        query = f"SELECT * FROM {self._name_entity} WHERE {field_find} LIKE '{value_find}'"
+        query = f"SELECT * FROM {self._name_entity} WHERE {field_find} LIKE ?"
 
         try:
-            entity = self._client_db.execute_dml(query)[0]
+            entity = self._client_db.execute_dml(query, (value_find,))[0]
         except IndexError:
             raise NotFoundError('Данные не найдены')
 

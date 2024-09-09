@@ -13,9 +13,9 @@ from decimal import Decimal, InvalidOperation
 
 
 class ExchangeRateController:
-    def __init__(self, exchange_rates_service: ExchangeRateService, currency_service : CurrencyService):
-        self.__exchange_rates_service = exchange_rates_service
-        self.__currency_service = currency_service
+    def __init__(self):
+        self.__exchange_rates_service = ExchangeRateService()
+        self.__currency_service = CurrencyService()
         self.register_routes()
 
     def register_routes(self):

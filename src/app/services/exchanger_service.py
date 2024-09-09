@@ -11,69 +11,66 @@ from decimal import Decimal
 
 
 class ExchangerService:
-    def __init__(self, exchange_rates_dao: ExchangeRateDAO, currencies_dao: CurrencyDAO):
-        self.__exchange_rates_dao = exchange_rates_dao
-        self.__currencies_dao = currencies_dao
+    def __init__(self):
+        self.__exchange_rates_dao = ExchangeRateDAO()
+        self.__currencies_dao = CurrencyDAO()
 
     def perform_currency_exchange(self, exchanger_request: ExchangerRequest) -> ExchangerResponse:
         if exchanger_request.base_currency.id == exchanger_request.target_currency.id:
             raise CurrencyIdentityError('Невозможно обменять валюту на саму себя')
 
-        return self.__calc_via_direct_exchange_rate(exchanger_request)
-
-    def __calc_via_direct_exchange_rate(self, exchanger_request: ExchangerRequest):
         try:
-            direct_exchange_rate_entity = self.__get_entity(exchanger_request.base_currency.id,
-                                                            exchanger_request.target_currency.id)
-            direct_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(direct_exchange_rate_entity)
-
-            converted_amount = direct_exchange_rate.rate * exchanger_request.amount
-            rate = direct_exchange_rate.rate
-
-            return ExchangerResponse(exchanger_request.base_currency,
-                                     exchanger_request.target_currency,
-                                     rate.quantize(Decimal('0.001')),
-                                     exchanger_request.amount,
-                                     converted_amount.quantize(Decimal('0.01')))
+            return self.__calc_by_direct_rate(exchanger_request)
         except ExchangeRateNotFoundError:
-            return self.__calc_via_reverse_exchange_rate(exchanger_request)
+            try:
+                return self.__calc_by_reverse_rate(exchanger_request)
+            except ExchangeRateNotFoundError:
+                return self.__calc_by_cross_rate(exchanger_request)
 
-    def __calc_via_reverse_exchange_rate(self, exchanger_request: ExchangerRequest):
-        try:
-            reverse_exchange_rate_entity = self.__get_entity(exchanger_request.target_currency.id,
-                                                             exchanger_request.base_currency.id)
-            reverse_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(reverse_exchange_rate_entity)
-            rate = Decimal(1) / reverse_exchange_rate.rate
-            converted_amount = exchanger_request.amount * rate
+    def __calc_by_direct_rate(self, exchanger_request: ExchangerRequest):
+        direct_exchange_rate_entity = self.__get_entity(exchanger_request.base_currency.id,
+                                                        exchanger_request.target_currency.id)
+        direct_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(direct_exchange_rate_entity)
 
-            return ExchangerResponse(exchanger_request.base_currency,
-                                     exchanger_request.target_currency,
-                                     rate.quantize(Decimal('0.0001')),
-                                     exchanger_request.amount,
-                                     converted_amount.quantize(Decimal('0.01')))
-        except ExchangeRateNotFoundError:
-            return self.__calc_amount_via_usd(exchanger_request)
+        converted_amount = direct_exchange_rate.rate * exchanger_request.amount
+        rate = direct_exchange_rate.rate
 
-    def __calc_amount_via_usd(self, exchanger_request: ExchangerRequest):
-        try:
-            usd_currency = self.__currencies_dao.find_by_code('USD')
+        return ExchangerResponse(exchanger_request.base_currency,
+                                 exchanger_request.target_currency,
+                                 rate.quantize(Decimal('0.001')),
+                                 exchanger_request.amount,
+                                 converted_amount.quantize(Decimal('0.01')))
 
-            usd_base_exchange_rate_entity = self.__get_entity(usd_currency.id, exchanger_request.base_currency.id)
-            usd_target_exchange_rate_entity = self.__get_entity(usd_currency.id, exchanger_request.target_currency.id)
+    def __calc_by_reverse_rate(self, exchanger_request: ExchangerRequest):
+        reverse_exchange_rate_entity = self.__get_entity(exchanger_request.target_currency.id,
+                                                         exchanger_request.base_currency.id)
+        reverse_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(reverse_exchange_rate_entity)
+        rate = Decimal(1) / reverse_exchange_rate.rate
+        converted_amount = exchanger_request.amount * rate
 
-            usd_base_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(usd_base_exchange_rate_entity)
-            usd_target_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(usd_target_exchange_rate_entity)
+        return ExchangerResponse(exchanger_request.base_currency,
+                                 exchanger_request.target_currency,
+                                 rate.quantize(Decimal('0.0001')),
+                                 exchanger_request.amount,
+                                 converted_amount.quantize(Decimal('0.01')))
 
-            converted_amount = (usd_base_exchange_rate.rate / usd_target_exchange_rate.rate) * exchanger_request.amount
-            rate = converted_amount / exchanger_request.amount
+    def __calc_by_cross_rate(self, exchanger_request: ExchangerRequest):
+        usd_currency = self.__currencies_dao.find_by_code('USD')
 
-            return ExchangerResponse(exchanger_request.base_currency,
-                                     exchanger_request.target_currency,
-                                     rate.quantize(Decimal('0.0001')),
-                                     exchanger_request.amount,
-                                     converted_amount.quantize(Decimal('0.01')))
-        except ExchangeRateNotFoundError:
-            raise NotFoundError('Не найден обменный курс для валютной пары')
+        usd_base_exchange_rate_entity = self.__get_entity(usd_currency.id, exchanger_request.base_currency.id)
+        usd_target_exchange_rate_entity = self.__get_entity(usd_currency.id, exchanger_request.target_currency.id)
+
+        usd_base_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(usd_base_exchange_rate_entity)
+        usd_target_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(usd_target_exchange_rate_entity)
+
+        converted_amount = (usd_base_exchange_rate.rate / usd_target_exchange_rate.rate) * exchanger_request.amount
+        rate = converted_amount / exchanger_request.amount
+
+        return ExchangerResponse(exchanger_request.base_currency,
+                                 exchanger_request.target_currency,
+                                 rate.quantize(Decimal('0.0001')),
+                                 exchanger_request.amount,
+                                 converted_amount.quantize(Decimal('0.01')))
 
     def __get_entity(self, base_currency_id: int, target_currency_id: int) -> ExchangeRate:
         exchange_rate_entity = ExchangeRate(id=0,

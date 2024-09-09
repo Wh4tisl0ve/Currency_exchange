@@ -9,8 +9,8 @@ from src.app.router import Router
 
 
 class CurrencyController:
-    def __init__(self, service: CurrencyService):
-        self.__service = service
+    def __init__(self):
+        self.__service = CurrencyService()
         self.register_routes()
 
     def register_routes(self):

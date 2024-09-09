@@ -12,9 +12,9 @@ from decimal import Decimal, InvalidOperation
 
 
 class ExchangerController:
-    def __init__(self, exchanger_service: ExchangerService, currency_service: CurrencyService):
-        self.__exchanger_service = exchanger_service
-        self.__currency_service = currency_service
+    def __init__(self):
+        self.__exchanger_service = ExchangerService()
+        self.__currency_service = CurrencyService()
         self.register_routes()
 
     def register_routes(self):
@@ -33,10 +33,7 @@ class ExchangerController:
             except KeyError:
                 field_missing = RequiredFieldMissingError('Отсутствует нужный параметр', 400)
                 return field_missing.to_dict()
-            except (CurrencyNotFoundError,
-                    ExchangeRateNotFoundError,
-                    NotFoundError,
-                    CurrencyIdentityError) as e:
+            except (CurrencyNotFoundError, NotFoundError, CurrencyIdentityError) as e:
                 return e.to_dict()
 
             return {"code": 200, "body": exchanger_response.to_dict()}

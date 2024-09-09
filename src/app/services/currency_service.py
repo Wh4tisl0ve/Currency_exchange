@@ -4,8 +4,8 @@ from src.app.dto.currency_dto import CurrencyDTO
 
 
 class CurrencyService:
-    def __init__(self, currencies_dao: CurrencyDAO):
-        self.__currencies_dao = currencies_dao
+    def __init__(self):
+        self.__currencies_dao = CurrencyDAO()
         self.__currency_mapper = CurrencyMapper()
 
     def get_all_currencies(self) -> list[CurrencyDTO]:
