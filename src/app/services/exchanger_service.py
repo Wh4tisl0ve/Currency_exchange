@@ -15,7 +15,7 @@ class ExchangerService:
 
     def perform_currency_exchange(self, exchanger_request: ExchangerRequest) -> ExchangerResponse:
         if exchanger_request.base_currency.id == exchanger_request.target_currency.id:
-            raise CurrencyIdentityError('Невозможно обменять валюту на саму себя')
+            raise CurrencyIdentityError('It is impossible to exchange currency for itself')
 
         try:
             return self.__calc_by_direct_rate(exchanger_request)
@@ -61,7 +61,8 @@ class ExchangerService:
         usd_base_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(usd_base_exchange_rate_entity)
         usd_target_exchange_rate = self.__exchange_rates_dao.find_by_pair_id(usd_target_exchange_rate_entity)
 
-        converted_amount = (usd_base_exchange_rate.rate / usd_target_exchange_rate.rate) * exchanger_request.amount
+        base_to_usd = (1 / usd_base_exchange_rate.rate) * exchanger_request.amount
+        converted_amount = base_to_usd * usd_target_exchange_rate.rate
         rate = converted_amount / exchanger_request.amount
 
         return ExchangerResponse(exchanger_request.base_currency,

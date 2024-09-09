@@ -1,4 +1,5 @@
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
+from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
 from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.no_content_error import NoContentError
@@ -18,8 +19,8 @@ class CurrencyController:
         def get_all_currencies() -> dict:
             try:
                 currencies = self.__service.get_all_currencies()
-            except NoContentError as no_content:
-                return no_content.to_dict()
+            except (NoContentError, DataBaseError) as err:
+                return err.to_dict()
 
             return {"code": 200, "body": [currency.to_dict() for currency in currencies]}
 
@@ -27,8 +28,8 @@ class CurrencyController:
         def get_concrete_currencies(currency_code: str) -> dict:
             try:
                 currency = self.__service.get_concrete_currency(currency_code)
-            except NotFoundError as currency_not_found:
-                return currency_not_found.to_dict()
+            except (NotFoundError, DataBaseError) as err:
+                return err.to_dict()
 
             return {"code": 200, "body": currency.to_dict()}
 
@@ -40,11 +41,8 @@ class CurrencyController:
                                           sign=request['sign'])
                 added_currency = self.__service.add_currency(request_dto)
             except KeyError:
-                field_missing = InvalidFieldError('A required form field is missing')
-                return field_missing.to_dict()
-            except ConstraintViolationException as currency_exists_error:
-                return currency_exists_error.to_dict()
-            except ValidationError as validation_error:
-                return validation_error.to_dict()
+                return InvalidFieldError('A required form field is missing').to_dict()
+            except (ConstraintViolationException, ValidationError, DataBaseError, NotFoundError) as err:
+                return err.to_dict()
 
             return {"code": 201, "body": added_currency.to_dict()}

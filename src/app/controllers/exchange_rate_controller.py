@@ -1,7 +1,9 @@
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
+from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
-from src.app.exceptions.not_found_error import NotFoundError
+from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.no_content_error import NoContentError
+from src.app.exceptions.not_found_error import NotFoundError
 from src.app.services.currency_service import CurrencyService
 from src.app.services.exchange_rate_service import ExchangeRateService
 from src.app.dto.exchange_rate_dto import ExchangeRateDTO
@@ -20,8 +22,10 @@ class ExchangeRateController:
         def get_all_exchange_rates() -> dict:
             try:
                 exchange_rates = self.__exchange_rates_service.get_all_exchange_rates()
-            except NoContentError as no_content:
-                return no_content.to_dict()
+            except (NoContentError, DataBaseError) as err:
+                return err.to_dict()
+            except TypeError:
+                return ValidationError('Endpoint does not accept parameters', 400).to_dict()
 
             return {"code": 200, "body": [ex_r.to_dict() for ex_r in exchange_rates]}
 
@@ -33,8 +37,8 @@ class ExchangeRateController:
 
                 request = ExchangeRateDTO(base_currency=base_currency, target_currency=target_currency)
                 exchange_rate = self.__exchange_rates_service.get_exchange_rate(request)
-            except NotFoundError as not_found_error:
-                return not_found_error.to_dict()
+            except (NotFoundError, DataBaseError) as err:
+                return err.to_dict()
 
             result_exchange_rate = ExchangeRateDTO(id=exchange_rate.id,
                                                    base_currency=base_currency,
@@ -55,13 +59,11 @@ class ExchangeRateController:
 
                 added_exchange_rate = self.__exchange_rates_service.add_exchange_rate(request_dto)
             except InvalidOperation:
-                field_invalid = InvalidFieldError('The request contains invalid data')
-                return field_invalid.to_dict()
+                return InvalidFieldError('The request contains invalid data').to_dict()
             except KeyError:
-                field_missing = InvalidFieldError('A required form field is missing')
-                return field_missing.to_dict()
-            except (NotFoundError, ConstraintViolationException) as e:
-                return e.to_dict()
+                return InvalidFieldError('A required form field is missing').to_dict()
+            except (NotFoundError, ConstraintViolationException, DataBaseError) as err:
+                return err.to_dict()
 
             result_exchange_rate = ExchangeRateDTO(id=added_exchange_rate.id,
                                                    base_currency=base_currency,
@@ -81,14 +83,12 @@ class ExchangeRateController:
                                               target_currency=target_currency,
                                               rate=Decimal(str(request['rate']).replace(',', '.')))
                 updated_exchange_rate = self.__exchange_rates_service.update_exchange_rate(request_dto)
-            except NotFoundError as not_found_error:
-                return not_found_error.to_dict()
-            except InvalidOperation:
-                field_invalid = InvalidFieldError('The request contains invalid data')
-                return field_invalid.to_dict()
+            except (NotFoundError, ConstraintViolationException, DataBaseError) as err:
+                return err.to_dict()
             except KeyError:
-                field_missing = InvalidFieldError('A required form field is missing')
-                return field_missing.to_dict()
+                return InvalidFieldError('A required form field is missing').to_dict()
+            except InvalidOperation:
+                return InvalidFieldError('The request contains invalid data').to_dict()
 
             result_exchange_rate = ExchangeRateDTO(id=updated_exchange_rate.id,
                                                    base_currency=base_currency,

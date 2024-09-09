@@ -1,4 +1,5 @@
 from src.app.exceptions.exchanger.currency_identy_error import CurrencyIdentityError
+from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.services.exchanger_service import ExchangerService
@@ -30,7 +31,7 @@ class ExchangerController:
             except KeyError:
                 field_missing = InvalidFieldError('A required form field is missing')
                 return field_missing.to_dict()
-            except (NotFoundError, CurrencyIdentityError) as e:
-                return e.to_dict()
+            except (NotFoundError, CurrencyIdentityError, DataBaseError) as err:
+                return err.to_dict()
 
             return {"code": 200, "body": exchanger_response.to_dict()}

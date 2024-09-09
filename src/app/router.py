@@ -1,5 +1,5 @@
 from src.app.exceptions.not_found_error import NotFoundError
-from src.app.db_clients.singleton import Singleton
+from src.app.utils.singleton import Singleton
 from typing import Callable
 import re
 

@@ -41,7 +41,7 @@ class ExchangeRateDAO(BaseDAO):
             if 'check' in e.args[0].lower():
                 message = 'Cannot add a rate with the same base and target currency code'
             else:
-                message = 'A currency pair with this code already exists'
+                message = 'The exchange rate with this currency pair already exists'
             raise ConstraintViolationException(message)
 
         return self.find_by_pair_id(exchange_rate)

@@ -1,9 +1,8 @@
-from src.app.exceptions.db_error.database_error import DataBaseError
+from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.router import Router
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
-from sqlite3 import OperationalError
 import json
 
 
@@ -21,10 +20,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                 response = handler(params)
             else:
                 response = handler(**params)
-        except (DataBaseError, NotFoundError) as e:
-            response = e.to_dict()
-        except OperationalError:
-            response = DataBaseError('No access to database').to_dict()
+        except NotFoundError as endpoint_not_found:
+            response = endpoint_not_found.to_dict()
+        except TypeError:
+            response = ValidationError('Endpoint does not accept parameters', 400).to_dict()
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
@@ -33,10 +32,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             handler = self.router.resolve(self.path, method='POST')[0]
             response = handler(params)
-        except (DataBaseError, NotFoundError) as e:
-            response = e.to_dict()
-        except OperationalError:
-            response = DataBaseError('No access to database').to_dict()
+        except NotFoundError as endpoint_not_found:
+            response = endpoint_not_found.to_dict()
+        except TypeError:
+            response = ValidationError('Endpoint does not accept parameters', 400).to_dict()
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
@@ -47,10 +46,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             handler = self.router.resolve(self.path, method='PATCH')[0]
             response = handler(params)
-        except (DataBaseError, NotFoundError) as e:
-            response = e.to_dict()
-        except OperationalError:
-            response = DataBaseError('No access to database').to_dict()
+        except NotFoundError as endpoint_not_found:
+            response = endpoint_not_found.to_dict()
+        except TypeError:
+            response = ValidationError('Endpoint does not accept parameters', 400).to_dict()
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 

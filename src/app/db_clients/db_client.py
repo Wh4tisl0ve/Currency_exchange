@@ -1,4 +1,4 @@
-from src.app.db_clients.singleton import Singleton
+from src.app.utils.singleton import Singleton
 from abc import abstractmethod
 
 
