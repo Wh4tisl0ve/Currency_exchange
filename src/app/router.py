@@ -1,5 +1,5 @@
+from src.app.exceptions.not_found_error import NotFoundError
 from src.app.db_clients.singleton import Singleton
-from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 from typing import Callable
 import re
 
@@ -21,4 +21,4 @@ class Router(metaclass=Singleton):
             if match:
                 return handler, match.groupdict()
 
-        raise EndpointNotFoundError('Эндпоинт не найден')
+        raise NotFoundError('Эндпоинт не найден')

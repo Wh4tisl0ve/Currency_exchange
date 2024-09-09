@@ -1,11 +1,9 @@
-from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
 from src.app.exceptions.exchanger.currency_identy_error import CurrencyIdentityError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.dto.response.exchanger_response import ExchangerResponse
 from src.app.dto.request.exchanger_request import ExchangerRequest
 from src.app.dao.exchange_rate_dao import ExchangeRateDAO
 from src.app.dao.currency_dao import CurrencyDAO
-from src.app.db_clients.db_client import DBClient
 from src.app.entities.exchange_rate import ExchangeRate
 from decimal import Decimal
 
@@ -21,10 +19,10 @@ class ExchangerService:
 
         try:
             return self.__calc_by_direct_rate(exchanger_request)
-        except ExchangeRateNotFoundError:
+        except NotFoundError:
             try:
                 return self.__calc_by_reverse_rate(exchanger_request)
-            except ExchangeRateNotFoundError:
+            except NotFoundError:
                 return self.__calc_by_cross_rate(exchanger_request)
 
     def __calc_by_direct_rate(self, exchanger_request: ExchangerRequest):

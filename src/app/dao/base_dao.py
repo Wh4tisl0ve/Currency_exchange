@@ -1,6 +1,6 @@
-from src.app.db_clients.sqlite_client import SQLiteClient
 from src.app.exceptions.no_content_error import NoContentError
 from src.app.exceptions.not_found_error import NotFoundError
+from src.app.db_clients.sqlite_client import SQLiteClient
 from abc import abstractmethod, ABC
 
 

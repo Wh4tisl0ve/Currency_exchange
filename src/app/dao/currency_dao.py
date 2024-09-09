@@ -1,5 +1,3 @@
-from src.app.exceptions.currency_error.currency_already_exists_error import CurrencyAlreadyExists
-from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.not_found_error import NotFoundError
@@ -21,7 +19,7 @@ class CurrencyDAO(BaseDAO):
         try:
             cur_id, cur_code, cur_name, cur_sign = self._find_concrete_entity(currency_code, 'Code')
         except NotFoundError:
-            raise CurrencyNotFoundError(f'Код {currency_code} не соответствует ни одной валюте')
+            raise NotFoundError(f'Код {currency_code} не соответствует ни одной валюте')
 
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
@@ -34,6 +32,6 @@ class CurrencyDAO(BaseDAO):
             if 'check' in e.args[0].lower():
                 raise ValidationError('Код валюты должен состоять из 3 латинских букв в верхнем регистре', 400)
             else:
-                raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует')
+                raise ConstraintViolationException('Валюта с указанным кодом уже существует')
 
         return self.find_by_code(currency.code)

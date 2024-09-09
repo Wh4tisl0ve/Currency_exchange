@@ -1,11 +1,8 @@
-from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error import ExchangeRateNotFoundError
-from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
-from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
 from src.app.exceptions.exchanger.currency_identy_error import CurrencyIdentityError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
 from src.app.exceptions.not_found_error import NotFoundError
-from src.app.services.currency_service import CurrencyService
 from src.app.services.exchanger_service import ExchangerService
+from src.app.services.currency_service import CurrencyService
 from src.app.dto.request.exchanger_request import ExchangerRequest
 from src.app.router import Router
 from decimal import Decimal, InvalidOperation
@@ -31,9 +28,9 @@ class ExchangerController:
                 field_invalid = InvalidFieldError('Запрос содержит некорректные данные')
                 return field_invalid.to_dict()
             except KeyError:
-                field_missing = RequiredFieldMissingError('Отсутствует нужный параметр', 400)
+                field_missing = InvalidFieldError('Отсутствует нужный параметр')
                 return field_missing.to_dict()
-            except (CurrencyNotFoundError, NotFoundError, CurrencyIdentityError) as e:
+            except (NotFoundError, CurrencyIdentityError) as e:
                 return e.to_dict()
 
             return {"code": 200, "body": exchanger_response.to_dict()}

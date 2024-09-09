@@ -1,8 +1,8 @@
-from src.app.exceptions.currency_error.currency_not_found_error import CurrencyNotFoundError
-from src.app.exceptions.currency_error.currency_already_exists_error import CurrencyAlreadyExists
-from src.app.exceptions.required_field_missing_error import RequiredFieldMissingError
-from src.app.exceptions.no_content_error import NoContentError
+from src.app.exceptions.constraint_violation_error import ConstraintViolationException
+from src.app.exceptions.invalid_field_error import InvalidFieldError
 from src.app.exceptions.validation_error import ValidationError
+from src.app.exceptions.no_content_error import NoContentError
+from src.app.exceptions.not_found_error import NotFoundError
 from src.app.services.currency_service import CurrencyService
 from src.app.dto.currency_dto import CurrencyDTO
 from src.app.router import Router
@@ -27,7 +27,7 @@ class CurrencyController:
         def get_concrete_currencies(currency_code: str) -> dict:
             try:
                 currency = self.__service.get_concrete_currency(currency_code)
-            except CurrencyNotFoundError as currency_not_found:
+            except NotFoundError as currency_not_found:
                 return currency_not_found.to_dict()
 
             return {"code": 200, "body": currency.to_dict()}
@@ -40,10 +40,10 @@ class CurrencyController:
                                           sign=request['sign'])
                 added_currency = self.__service.add_currency(request_dto)
             except KeyError:
-                field_missing = RequiredFieldMissingError('Отсутствует нужное поле формы', 400)
+                field_missing = InvalidFieldError('Отсутствует нужное поле формы')
                 return field_missing.to_dict()
-            except CurrencyAlreadyExists as currency_exists:
-                return currency_exists.to_dict()
+            except ConstraintViolationException as currency_exists_error:
+                return currency_exists_error.to_dict()
             except ValidationError as validation_error:
                 return validation_error.to_dict()
 

@@ -1,7 +1,7 @@
-from src.app.db_clients.config.config import load_config
-from src.app.exceptions.db_error.database_file_not_found_error import DatabaseFileNotFoundError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.exceptions.db_error.database_error import DataBaseError
+from src.app.exceptions.not_found_error import NotFoundError
+from src.app.db_clients.config.config import load_config
 from src.app.db_clients.db_client import DBClient
 from sqlite3 import IntegrityError, OperationalError, DatabaseError
 import sqlite3
@@ -19,7 +19,7 @@ class SQLiteClient(DBClient):
         try:
             self.client = sqlite3.connect(self.__config['sqlite']['database_path'])
         except OperationalError:
-            raise DatabaseFileNotFoundError('Файл базы данных не был найден')
+            raise NotFoundError('Файл базы данных не был найден')
         except DatabaseError:
             raise DataBaseError('База данных недоступна')
 

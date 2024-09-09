@@ -1,5 +1,5 @@
-from src.app.exceptions.endpoint_not_found_error import EndpointNotFoundError
 from src.app.exceptions.db_error.database_error import DataBaseError
+from src.app.exceptions.not_found_error import NotFoundError
 from src.app.router import Router
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
@@ -21,7 +21,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 response = handler(params)
             else:
                 response = handler(**params)
-        except (DataBaseError, EndpointNotFoundError) as e:
+        except (DataBaseError, NotFoundError) as e:
             response = e.to_dict()
         except OperationalError:
             response = DataBaseError('Нет доступа к базе данных').to_dict()
@@ -33,7 +33,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             handler = self.router.resolve(self.path, method='POST')[0]
             response = handler(params)
-        except (DataBaseError, EndpointNotFoundError) as e:
+        except (DataBaseError, NotFoundError) as e:
             response = e.to_dict()
         except OperationalError:
             response = DataBaseError('Нет доступа к базе данных').to_dict()
@@ -47,7 +47,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         try:
             handler = self.router.resolve(self.path, method='PATCH')[0]
             response = handler(params)
-        except (DataBaseError, EndpointNotFoundError) as e:
+        except (DataBaseError, NotFoundError) as e:
             response = e.to_dict()
         except OperationalError:
             e = DataBaseError('Нет доступа к базе данных')
