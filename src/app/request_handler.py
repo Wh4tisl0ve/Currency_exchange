@@ -24,7 +24,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         except (DataBaseError, NotFoundError) as e:
             response = e.to_dict()
         except OperationalError:
-            response = DataBaseError('Нет доступа к базе данных').to_dict()
+            response = DataBaseError('No access to database').to_dict()
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
@@ -36,7 +36,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         except (DataBaseError, NotFoundError) as e:
             response = e.to_dict()
         except OperationalError:
-            response = DataBaseError('Нет доступа к базе данных').to_dict()
+            response = DataBaseError('No access to database').to_dict()
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
@@ -50,8 +50,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         except (DataBaseError, NotFoundError) as e:
             response = e.to_dict()
         except OperationalError:
-            e = DataBaseError('Нет доступа к базе данных')
-            response = e.to_dict()
+            response = DataBaseError('No access to database').to_dict()
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 

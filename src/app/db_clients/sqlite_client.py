@@ -19,9 +19,9 @@ class SQLiteClient(DBClient):
         try:
             self.client = sqlite3.connect(self.__config['sqlite']['database_path'])
         except OperationalError:
-            raise NotFoundError('Файл базы данных не был найден')
+            raise NotFoundError('The database file was not found')
         except DatabaseError:
-            raise DataBaseError('База данных недоступна')
+            raise DataBaseError('The database is unavailable')
 
     def __is_connection_open(self) -> bool:
         return self.client is not None
@@ -42,10 +42,10 @@ class SQLiteClient(DBClient):
             self._execute_query(query, parameters)
             self.client.commit()
         else:
-            raise DataBaseError('Подключение к БД было закрыто')
+            raise DataBaseError('The connection to the database was closed')
 
     def execute_dml(self, query: str, parameters: tuple = ()) -> list:
         if self.__is_connection_open():
             return self._execute_query(query, parameters)
         else:
-            raise DataBaseError('Подключение к БД было закрыто')
+            raise DataBaseError('The connection to the database was closed')

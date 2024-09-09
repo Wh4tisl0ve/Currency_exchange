@@ -19,7 +19,7 @@ class CurrencyDAO(BaseDAO):
         try:
             cur_id, cur_code, cur_name, cur_sign = self._find_concrete_entity(currency_code, 'Code')
         except NotFoundError:
-            raise NotFoundError(f'Код {currency_code} не соответствует ни одной валюте')
+            raise NotFoundError(f'Code {currency_code} does not match any currency')
 
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
@@ -30,8 +30,8 @@ class CurrencyDAO(BaseDAO):
             self._client_db.execute_ddl(query, (currency.code, currency.name, currency.sign))
         except ConstraintViolationException as e:
             if 'check' in e.args[0].lower():
-                raise ValidationError('Код валюты должен состоять из 3 латинских букв в верхнем регистре', 400)
+                raise ValidationError('The currency code must consist of 3 uppercase Latin letters', 400)
             else:
-                raise ConstraintViolationException('Валюта с указанным кодом уже существует')
+                raise ConstraintViolationException('The currency with the specified code already exists')
 
         return self.find_by_code(currency.code)

@@ -25,10 +25,10 @@ class ExchangerController:
                                            amount=Decimal(str(request['amount']).replace(',', '.')))
                 exchanger_response = self.__exchanger_service.perform_currency_exchange(request)
             except InvalidOperation:
-                field_invalid = InvalidFieldError('Запрос содержит некорректные данные')
+                field_invalid = InvalidFieldError('The request contains invalid data')
                 return field_invalid.to_dict()
             except KeyError:
-                field_missing = InvalidFieldError('Отсутствует нужный параметр')
+                field_missing = InvalidFieldError('A required form field is missing')
                 return field_missing.to_dict()
             except (NotFoundError, CurrencyIdentityError) as e:
                 return e.to_dict()

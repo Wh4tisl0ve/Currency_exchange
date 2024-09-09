@@ -55,10 +55,10 @@ class ExchangeRateController:
 
                 added_exchange_rate = self.__exchange_rates_service.add_exchange_rate(request_dto)
             except InvalidOperation:
-                field_invalid = InvalidFieldError('Запрос содержит некорректные данные')
+                field_invalid = InvalidFieldError('The request contains invalid data')
                 return field_invalid.to_dict()
             except KeyError:
-                field_missing = InvalidFieldError('Отсутствует нужное поле формы')
+                field_missing = InvalidFieldError('A required form field is missing')
                 return field_missing.to_dict()
             except (NotFoundError, ConstraintViolationException) as e:
                 return e.to_dict()
@@ -84,10 +84,10 @@ class ExchangeRateController:
             except NotFoundError as not_found_error:
                 return not_found_error.to_dict()
             except InvalidOperation:
-                field_invalid = InvalidFieldError('Запрос содержит некорректные данные')
+                field_invalid = InvalidFieldError('The request contains invalid data')
                 return field_invalid.to_dict()
             except KeyError:
-                field_missing = InvalidFieldError('Отсутствует нужное поле формы')
+                field_missing = InvalidFieldError('A required form field is missing')
                 return field_missing.to_dict()
 
             result_exchange_rate = ExchangeRateDTO(id=updated_exchange_rate.id,

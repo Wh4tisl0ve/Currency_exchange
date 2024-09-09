@@ -26,7 +26,7 @@ class ExchangeRateDAO(BaseDAO):
             data = (exchange_rate.base_currency_id, exchange_rate.target_currency_id)
             er_id, er_base, er_target, er_rate = self._client_db.execute_dml(query, data)[0]
         except IndexError:
-            raise NotFoundError('Обменный курс для пары не найден')
+            raise NotFoundError('Exchange rate for currency pair not found')
 
         return ExchangeRate(id=er_id, base_currency_id=er_base, target_currency_id=er_target, rate=Decimal(er_rate))
 
@@ -39,9 +39,9 @@ class ExchangeRateDAO(BaseDAO):
                                                 float(exchange_rate.rate)))
         except ConstraintViolationException as e:
             if 'check' in e.args[0].lower():
-                message = 'Невозможно добавить курс с одинаковым базовым и целевым кодом валюты'
+                message = 'Cannot add a rate with the same base and target currency code'
             else:
-                message = 'Валютная пара с таким кодом уже существует'
+                message = 'A currency pair with this code already exists'
             raise ConstraintViolationException(message)
 
         return self.find_by_pair_id(exchange_rate)

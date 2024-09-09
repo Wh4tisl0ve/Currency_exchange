@@ -13,7 +13,7 @@ class BaseDAO(ABC):
         query = f'SELECT * FROM {self._name_entity}'
         entities = self._client_db.execute_dml(query)
         if not entities:
-            raise NoContentError('Запрос вернул пустой набор данных')
+            raise NoContentError('The query returned an empty data set')
 
         return entities
 
@@ -23,7 +23,7 @@ class BaseDAO(ABC):
         try:
             entity = self._client_db.execute_dml(query, (value_find,))[0]
         except IndexError:
-            raise NotFoundError('Данные не найдены')
+            raise NotFoundError('Data not found')
 
         return entity
 

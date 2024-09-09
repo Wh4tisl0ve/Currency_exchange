@@ -40,7 +40,7 @@ class CurrencyController:
                                           sign=request['sign'])
                 added_currency = self.__service.add_currency(request_dto)
             except KeyError:
-                field_missing = InvalidFieldError('Отсутствует нужное поле формы')
+                field_missing = InvalidFieldError('A required form field is missing')
                 return field_missing.to_dict()
             except ConstraintViolationException as currency_exists_error:
                 return currency_exists_error.to_dict()

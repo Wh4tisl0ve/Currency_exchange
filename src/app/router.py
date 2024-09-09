@@ -21,4 +21,4 @@ class Router(metaclass=Singleton):
             if match:
                 return handler, match.groupdict()
 
-        raise NotFoundError('Эндпоинт не найден')
+        raise NotFoundError('Endpoint not found')
