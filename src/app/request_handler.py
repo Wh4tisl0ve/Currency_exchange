@@ -26,7 +26,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         except OperationalError:
             response = DataBaseError('Нет доступа к базе данных').to_dict()
 
-        self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
+        self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
     def do_POST(self) -> None:
         params = self.get_params()
@@ -38,7 +38,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         except OperationalError:
             response = DataBaseError('Нет доступа к базе данных').to_dict()
 
-        self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
+        self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
     def do_PATCH(self) -> None:
         params = self.get_params()
@@ -53,7 +53,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             e = DataBaseError('Нет доступа к базе данных')
             response = e.to_dict()
 
-        self._send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
+        self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
     def get_params(self) -> dict:
         content_length = int(self.headers['Content-Length'])
@@ -62,7 +62,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         params = {k: v[0] for k, v in params.items()}
         return params
 
-    def _send_response(self, code, content_type, body) -> None:
+    def __send_response(self, code, content_type, body) -> None:
         self.send_response(code)
         self.send_header('Content-type', content_type)
         self.end_headers()

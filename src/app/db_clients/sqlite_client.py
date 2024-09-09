@@ -11,6 +11,7 @@ class SQLiteClient(DBClient):
     def __init__(self):
         super().__init__()
         self.__config = load_config()
+        self.open_connection()
 
     def open_connection(self) -> None:
         if self.__is_connection_open():

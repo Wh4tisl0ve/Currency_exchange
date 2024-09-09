@@ -7,28 +7,27 @@ from src.app.entities.currency import Currency
 from src.app.dao.base_dao import BaseDAO
 
 
-class CurrenciesDAO(BaseDAO):
+class CurrencyDAO(BaseDAO):
     def __init__(self):
         super().__init__('Currencies')
 
-    def get_all_currencies(self) -> list[Currency]:
-        currencies = self._get_all_entities()
+    def find_all(self) -> list[Currency]:
+        currencies = self._find_all_entities()
         currencies_entity = [Currency(id=cur[0], code=cur[1], name=cur[2], sign=cur[3]) for cur in currencies]
 
         return currencies_entity
 
-    def get_currency_by_code(self, currency_code: str = '') -> Currency:
+    def find_by_code(self, currency_code: str = '') -> Currency:
         try:
-            cur_id, cur_code, cur_name, cur_sign = self._get_concrete_entity(currency_code, 'Code')
+            cur_id, cur_code, cur_name, cur_sign = self._find_concrete_entity(currency_code, 'Code')
         except NotFoundError:
             raise CurrencyNotFoundError(f'Код {currency_code} не соответствует ни одной валюте')
 
         return Currency(id=cur_id, name=cur_name, code=cur_code, sign=cur_sign)
 
-    def add(self, currency: Currency) -> Currency:
+    def save_entity(self, currency: Currency) -> Currency:
         query = "INSERT INTO Currencies (Code, FullName, Sign) VALUES (?,?,?)"
 
-        self._client_db.open_connection()
         try:
             self._client_db.execute_ddl(query, (currency.code, currency.name, currency.sign))
         except ConstraintViolationException as e:
@@ -37,4 +36,4 @@ class CurrenciesDAO(BaseDAO):
             else:
                 raise CurrencyAlreadyExists('Валюта с указанным кодом уже существует')
 
-        return self.get_currency_by_code(currency.code)
+        return self.find_by_code(currency.code)

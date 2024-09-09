@@ -12,14 +12,13 @@ from decimal import Decimal, InvalidOperation
 
 
 class ExchangerController:
-    def __init__(self):
-        self.__exchanger_service = ExchangerService()
-        self.__currency_service = CurrencyService()
-        self.__router = Router()
+    def __init__(self, exchanger_service: ExchangerService, currency_service: CurrencyService):
+        self.__exchanger_service = exchanger_service
+        self.__currency_service = currency_service
         self.register_routes()
 
     def register_routes(self):
-        @self.__router.route(r'^/exchange$', method='GET')
+        @Router().route(r'^/exchange$', method='GET')
         def get_all_exchange_rates(request: dict) -> dict:
             try:
                 base_currency = self.__currency_service.get_concrete_currency(request['from'])

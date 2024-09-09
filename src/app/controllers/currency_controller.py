@@ -9,13 +9,12 @@ from src.app.router import Router
 
 
 class CurrencyController:
-    def __init__(self):
-        self.__service = CurrencyService()
-        self.__router = Router()
+    def __init__(self, service: CurrencyService):
+        self.__service = service
         self.register_routes()
 
     def register_routes(self):
-        @self.__router.route(r'^/currencies$', method='GET')
+        @Router().route(r'^/currencies$', method='GET')
         def get_all_currencies() -> dict:
             try:
                 currencies = self.__service.get_all_currencies()
@@ -24,7 +23,7 @@ class CurrencyController:
 
             return {"code": 200, "body": [currency.to_dict() for currency in currencies]}
 
-        @self.__router.route(r'^/currency/(?P<currency_code>[a-zA-Z]{3})$', method='GET')
+        @Router().route(r'^/currency/(?P<currency_code>[a-zA-Z]{3})$', method='GET')
         def get_concrete_currencies(currency_code: str) -> dict:
             try:
                 currency = self.__service.get_concrete_currency(currency_code)
@@ -33,7 +32,7 @@ class CurrencyController:
 
             return {"code": 200, "body": currency.to_dict()}
 
-        @self.__router.route(r'^/currencies$', method='POST')
+        @Router().route(r'^/currencies$', method='POST')
         def add_currency(request: dict) -> dict:
             try:
                 request_dto = CurrencyDTO(name=request['name'],

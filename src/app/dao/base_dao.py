@@ -9,7 +9,7 @@ class BaseDAO(ABC):
         self._client_db = SQLiteClient()
         self._name_entity = name_entity
 
-    def _get_all_entities(self) -> list[tuple]:
+    def _find_all_entities(self) -> list[tuple]:
         query = f'SELECT * FROM {self._name_entity}'
         entities = self._client_db.execute_dml(query)
         if not entities:
@@ -17,7 +17,7 @@ class BaseDAO(ABC):
 
         return entities
 
-    def _get_concrete_entity(self, value_find: str, field_find: str) -> tuple:
+    def _find_concrete_entity(self, value_find: str, field_find: str) -> tuple:
         query = f"SELECT * FROM {self._name_entity} WHERE {field_find} LIKE '{value_find}'"
 
         try:
@@ -28,5 +28,5 @@ class BaseDAO(ABC):
         return entity
 
     @abstractmethod
-    def add(self, *args, **kwargs):
+    def save_entity(self, *args, **kwargs):
         pass

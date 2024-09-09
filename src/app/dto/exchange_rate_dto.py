@@ -4,7 +4,7 @@ from decimal import Decimal
 
 
 @dataclass(frozen=True)
-class ExchangeRatesDTO:
+class ExchangeRateDTO:
     base_currency: CurrencyDTO
     target_currency: CurrencyDTO
     id: int = 0

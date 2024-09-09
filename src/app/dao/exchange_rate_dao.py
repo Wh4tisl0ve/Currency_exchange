@@ -3,16 +3,15 @@ from src.app.exceptions.exchange_rates_error.exchange_rates_not_found_error impo
 from src.app.exceptions.exchange_rates_error.invalid_currency_pair_error import InvalidCurrencyPairError
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.entities.exchange_rate import ExchangeRate
-from src.app.db_clients.db_client import DBClient
 from src.app.dao.base_dao import BaseDAO
 from decimal import Decimal
 
 
-class ExchangeRatesDAO(BaseDAO):
+class ExchangeRateDAO(BaseDAO):
     def __init__(self):
         super().__init__('ExchangeRates')
 
-    def get_all_exchange_rates(self) -> list[tuple]:
+    def find_all(self) -> list[tuple]:
         query = '''SELECT er.id, base.*, target.*, er.rate
                    FROM ExchangeRates er
                    JOIN Currencies as base ON er.BaseCurrencyId = base.id
@@ -22,7 +21,7 @@ class ExchangeRatesDAO(BaseDAO):
 
         return exchange_rates_data
 
-    def get_exchange_rate(self, exchange_rate: ExchangeRate) -> ExchangeRate:
+    def find_by_pair_id(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         query = f'SELECT * FROM {self._name_entity} WHERE BaseCurrencyID = ? AND TargetCurrencyID = ?'
 
         try:
@@ -33,7 +32,7 @@ class ExchangeRatesDAO(BaseDAO):
 
         return ExchangeRate(id=er_id, base_currency_id=er_base, target_currency_id=er_target, rate=Decimal(er_rate))
 
-    def add(self, exchange_rate: ExchangeRate) -> ExchangeRate:
+    def save_entity(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         query = f'INSERT INTO {self._name_entity} (BaseCurrencyId, TargetCurrencyId, Rate) VALUES (?,?,?)'
 
         try:
@@ -46,7 +45,7 @@ class ExchangeRatesDAO(BaseDAO):
             else:
                 raise ExchangeRateAlreadyExistsError('Валютная пара с таким кодом уже существует')
 
-        return self.get_exchange_rate(exchange_rate)
+        return self.find_by_pair_id(exchange_rate)
 
     def update(self, exchange_rate: ExchangeRate) -> ExchangeRate:
         query = f'UPDATE {self._name_entity} SET Rate = ? WHERE BaseCurrencyId = ? AND TargetCurrencyId = ?'
@@ -55,4 +54,4 @@ class ExchangeRatesDAO(BaseDAO):
                                             exchange_rate.base_currency_id,
                                             exchange_rate.target_currency_id))
 
-        return self.get_exchange_rate(exchange_rate)
+        return self.find_by_pair_id(exchange_rate)
