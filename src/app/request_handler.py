@@ -51,6 +51,10 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         self.__send_response(response['code'], 'application/json', json.dumps(response['body'], indent=4))
 
+    def do_OPTIONS(self):
+        self.send_response(200, "ok")
+        self.__send_headers(access_control_allow_headers="X-Requested-With, Content-Type")
+
     def get_params(self) -> dict:
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
@@ -58,8 +62,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         params = {k: v[0] for k, v in params.items()}
         return params
 
-    def __send_response(self, code, content_type, body) -> None:
-        self.send_response(code)
+    def __send_headers(self, content_type='application/json',
+                       access_control_allow_methods='GET, POST, PATCH, OPTIONS',
+                       access_control_allow_headers='Content-Type',
+                       access_control_allow_credentials='true',
+                       access_control_allow_origin='*'):
+        self.send_header('Access-Control-Allow-Credentials', access_control_allow_credentials)
+        self.send_header('Access-Control-Allow-Methods', access_control_allow_methods)
+        self.send_header('Access-Control-Allow-Headers', access_control_allow_headers)
+        self.send_header('Access-Control-Allow-Origin', access_control_allow_origin)
         self.send_header('Content-type', content_type)
         self.end_headers()
+
+    def __send_response(self, code, content_type, body) -> None:
+        self.send_response(code)
+        self.__send_headers(content_type)
         self.wfile.write(body.encode('utf-8'))
