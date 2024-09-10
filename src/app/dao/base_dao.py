@@ -1,3 +1,4 @@
+from src.app.db_clients.config.config import load_config
 from src.app.exceptions.no_content_error import NoContentError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.db_clients.sqlite_client import SQLiteClient
@@ -6,7 +7,7 @@ from abc import abstractmethod, ABC
 
 class BaseDAO(ABC):
     def __init__(self, name_entity: str):
-        self._client_db = SQLiteClient()
+        self._client_db = SQLiteClient(load_config())
         self._name_entity = name_entity
 
     def _find_all_entities(self) -> list[tuple]:

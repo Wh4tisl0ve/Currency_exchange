@@ -7,11 +7,9 @@ import json
 
 
 class RequestHandler(BaseHTTPRequestHandler):
-    router = Router()
-
     def do_GET(self) -> None:
         try:
-            handler, params = self.router.resolve(urlparse(self.path).path, method='GET')
+            handler, params = Router().resolve(urlparse(self.path).path, method='GET')
             query_params = parse_qs(urlparse(self.path).query)
 
             if query_params:
@@ -30,7 +28,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         params = self.get_params()
         try:
-            handler = self.router.resolve(self.path, method='POST')[0]
+            handler = Router().resolve(self.path, method='POST')[0]
             response = handler(params)
         except NotFoundError as endpoint_not_found:
             response = endpoint_not_found.to_dict()
@@ -44,7 +42,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         params['path'] = self.path
 
         try:
-            handler = self.router.resolve(self.path, method='PATCH')[0]
+            handler = Router().resolve(self.path, method='PATCH')[0]
             response = handler(params)
         except NotFoundError as endpoint_not_found:
             response = endpoint_not_found.to_dict()
