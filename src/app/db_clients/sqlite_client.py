@@ -1,16 +1,14 @@
-import os
-
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
 from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.not_found_error import NotFoundError
 from src.app.db_clients.db_client import DBClient
 from sqlite3 import IntegrityError, OperationalError, DatabaseError, Connection
 import sqlite3
+import os
 
 
 class SQLiteClient(DBClient):
     def __init__(self, config_db: dict):
-        super().__init__()
         self.__config = config_db
 
     def open_connection(self) -> Connection:
@@ -18,8 +16,8 @@ class SQLiteClient(DBClient):
 
     def _create_connection(self) -> Connection:
         try:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            resources_dir = os.path.join(script_dir, '..', self.__config['sqlite']['database_path'])
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            resources_dir = os.path.join(current_dir, '..', self.__config['sqlite']['database_path'])
             return sqlite3.connect(resources_dir)
         except OperationalError:
             raise NotFoundError('The database file was not found')

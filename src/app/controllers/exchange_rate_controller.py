@@ -4,8 +4,8 @@ from src.app.exceptions.invalid_field_error import InvalidFieldError
 from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.no_content_error import NoContentError
 from src.app.exceptions.not_found_error import NotFoundError
-from src.app.services.currency_service import CurrencyService
 from src.app.services.exchange_rate_service import ExchangeRateService
+from src.app.services.currency_service import CurrencyService
 from src.app.dto.exchange_rate_dto import ExchangeRateDTO
 from src.app.router import Router
 from decimal import Decimal, InvalidOperation

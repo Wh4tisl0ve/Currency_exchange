@@ -4,7 +4,7 @@ import re
 
 
 class Router:
-    __routes: dict[str, dict[re.Pattern, Callable]] = {'GET': {}, 'POST': {}, 'PATCH': {}}
+    __routes = {'GET': {}, 'POST': {}, 'PATCH': {}}
     _instance = None
 
     def __new__(cls, *args, **kwargs):

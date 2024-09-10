@@ -1,6 +1,6 @@
 from src.app.exceptions.constraint_violation_error import ConstraintViolationException
-from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.invalid_field_error import InvalidFieldError
+from src.app.exceptions.db_error.database_error import DataBaseError
 from src.app.exceptions.validation_error import ValidationError
 from src.app.exceptions.no_content_error import NoContentError
 from src.app.exceptions.not_found_error import NotFoundError

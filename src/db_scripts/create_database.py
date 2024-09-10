@@ -1,10 +1,12 @@
-from src.app.db_clients.config.config import load_config
 from src.app.db_clients.sqlite_client import SQLiteClient
+from src.app.db_clients.config.config import load_config
+import os
 
-conn = SQLiteClient(load_config())
+config_db = load_config()
+conn = SQLiteClient(config_db)
 
 
-def create_table():
+def create_table() -> None:
     conn.execute_ddl('''CREATE TABLE IF NOT EXISTS Currencies 
                         (ID INTEGER PRIMARY KEY AUTOINCREMENT, 
                          Code TEXT UNIQUE, 
@@ -28,7 +30,7 @@ def create_table():
                         ))''')
 
 
-def insert_data():
+def insert_data() -> None:
     rows = (('AUD', 'Australian dollar', 'A$'),
             ('CNY', 'Yuan Renminbi', '¥'),
             ('EUR', 'Euro', '€'),
@@ -87,5 +89,9 @@ def insert_data():
         conn.execute_ddl("INSERT INTO ExchangeRates (BaseCurrencyId, TargetCurrencyId, Rate) VALUES (?,?,?)", data)
 
 
-create_table()
-insert_data()
+def create_database() -> None:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    resources_dir = os.path.join(current_dir, config_db['sqlite']['database_path'])
+    if not os.path.isfile(resources_dir):
+        create_table()
+        insert_data()
