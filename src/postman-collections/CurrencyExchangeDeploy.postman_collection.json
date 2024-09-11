@@ -1,0 +1,275 @@
+{
+	"info": {
+		"_postman_id": "4306c087-d00c-4e9b-86f1-386add8f2222",
+		"name": "CurrencyExchangeDeploy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38114662"
+	},
+	"item": [
+		{
+			"name": "Currency",
+			"item": [
+				{
+					"name": "/currencies",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://194.67.88.204:8080/currencies",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"currencies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/currency/USD",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://194.67.88.204:8080/currency/USD",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"currency",
+								"USD"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/currencies",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "t",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "TTT",
+									"type": "text"
+								},
+								{
+									"key": "sign",
+									"value": "gg",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://194.67.88.204:8080/currencies",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"currencies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ExchangeRates",
+			"item": [
+				{
+					"name": "/exchangeRates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://194.67.88.204:8080/exchangeRates",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"exchangeRates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exchangeRates/USDRUB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://194.67.88.204:8080/exchangeRate/USDRUB",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"exchangeRate",
+								"USDRUB"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exchangeRates",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "baseCurrencyCode",
+									"value": "USD",
+									"type": "text"
+								},
+								{
+									"key": "targetCurrencyCode",
+									"value": "YYY",
+									"type": "text"
+								},
+								{
+									"key": "rate",
+									"value": "12.3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://194.67.88.204:8080/exchangeRates",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"exchangeRates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exchangeRate",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "rate",
+									"value": "90.5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://194.67.88.204:8080/exchangeRate/RUBUSD",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"exchangeRate",
+								"RUBUSD"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exchanger",
+			"item": [
+				{
+					"name": "/exchange",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://194.67.88.204:8080/exchange?from=TTT&to=YYY&amount=500",
+							"protocol": "http",
+							"host": [
+								"194",
+								"67",
+								"88",
+								"204"
+							],
+							"port": "8080",
+							"path": [
+								"exchange"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "TTT"
+								},
+								{
+									"key": "to",
+									"value": "YYY"
+								},
+								{
+									"key": "amount",
+									"value": "500"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
