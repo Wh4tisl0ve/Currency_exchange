@@ -1,7 +1,6 @@
-from decimal import Decimal
-
 from src.app.dto.currency_dto import CurrencyDTO
 from dataclasses import dataclass
+from decimal import Decimal
 
 
 @dataclass(frozen=True)
