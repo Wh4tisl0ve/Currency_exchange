@@ -11,8 +11,8 @@ REST API для описания валют и обменных курсов.
 </p>
 
 ## Запуск проекта
-1. Выполните клонирование проекта `git@github.com:Wh4tisl0ve/Currency_exchange.git`
-2. Запустите скрипт выполнив `python3 run.py` в терминале.
+1. Выполните клонирование проекта `git clone git@github.com:Wh4tisl0ve/Currency_exchange.git`
+2. Запустите скрипт выполнив `python3 -m src.app.run` в терминале.
 3. Импортируйте коллекцию постман [CurrencyExchange.postman_collection.json](src/postman-collections/CurrencyExchange.postman_collection.json)
 4. Выполните предложенные HTTP запросы в Postman или перейдите по адресу http://127.0.0.1:8080.
 
